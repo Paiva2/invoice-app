@@ -13,6 +13,8 @@ module.exports = {
       colors: {
         "strong-blue": "#252945",
         "light-purple": "#7c5dfa",
+        "hover-purple": "#9277ff",
+        "pure-white": "#fff",
       },
     },
   },
