@@ -15,6 +15,8 @@ module.exports = {
         "dark-blue": "#1e2139",
         "light-purple": "#7c5dfa",
         "hover-purple": "#9277ff",
+        "hash-blue": "#7e88c3",
+        "spacial-dark": "#0c0e16",
         "pure-white": "#fff",
         "strong-emerald": "#33d69f",
         "strong-orange": "#ff8f00",

@@ -1,3 +1,5 @@
+import AmountTable from "@/components/AmountTable"
+import InvoiceInformationTopBar from "@/components/InvoiceInformationTopBar"
 import InvoiceTypePin from "@/components/InvoiceTypePin"
 import PagesContainer from "@/components/PagesContainer"
 import ArrowLeft from "@/icons/ArrowLeft"
@@ -16,29 +18,56 @@ const InvoiceInformations = () => {
           <p>Go back</p>
         </Link>
 
-        <div className="flex flex-col gap-2.5">
-          <div className="bg-dark-blue p-8 rounded-lg flex justify-between items-center">
-            <div className="flex items-baseline gap-8">
-              <p className="text-sm">Status</p>
+        <InvoiceInformationTopBar type="paid" />
 
-              <InvoiceTypePin type="paid" />
+        <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8">
+          <div className="flex justify-between">
+            <div className="text-sm">
+              <p className="font-bold">
+                <span className="text-hash-blue">#</span>XM9141
+              </p>
+              <p>Graphic Design</p>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <button
-                className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
-                type="button"
-              >
-                Edit
-              </button>
-              <button
-                className="bg-light-red px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
-                type="button"
-              >
-                Delete
-              </button>
+            <div className="flex flex-col text-sm">
+              <p>19 Union Terrace</p>
+              <p>London</p>
+              <p>E1 3EZ</p>
+              <p>United Kingdom</p>
             </div>
           </div>
+
+          <div className="flex gap-10 justify-between flex-wrap">
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <p className="text-sm">Invoice Date</p>
+                <h2 className="font-bold text-xl">20 Aug 2021</h2>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-sm">Payment Due</p>
+                <h2 className="font-bold text-xl">19 Sep 2021</h2>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <p className="text-sm">Bill To</p>
+                <h2 className="font-bold text-xl">Alex Grim</h2>
+              </div>
+              <div className="flex flex-col text-sm">
+                <p>84 Church Way</p>
+                <p>Bradford</p>
+                <p>BD1 9PB</p>
+                <p>United Kingdom</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <p className="text-sm">Sent To</p>
+              <h2 className="font-bold text-xl">alexgrim@mail.com</h2>
+            </div>
+          </div>
+          <AmountTable />
         </div>
       </div>
     </PagesContainer>
