@@ -1,3 +1,4 @@
+import SidebarMenu from "@/components/SidebarMenu"
 import "./globals.css"
 import type { Metadata } from "next"
 import { League_Spartan } from "next/font/google"
@@ -17,7 +18,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-US">
-      <body className={leagueSpartan.className}>{children}</body>
+      <body
+        style={{
+          display: "flex",
+        }}
+        className={leagueSpartan.className}
+      >
+        <SidebarMenu />
+        {children}
+      </body>
     </html>
   )
 }

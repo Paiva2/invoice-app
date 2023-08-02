@@ -1,12 +1,11 @@
 import React from "react"
 import FilterBar from "../FilterBar"
-import ArrowRight from "@/icons/ArrowRight"
-import { tv as tailwindVariants } from "tailwind-variants"
 import Invoice from "./Invoice"
+import PagesContainer from "../PagesContainer"
 
 const HomeMiddleSection = () => {
   return (
-    <div className="w-full h-screen flex flex-col items-center text-pure-white">
+    <PagesContainer>
       <FilterBar />
 
       <div className="flex flex-col w-[45%] gap-3.5">
@@ -14,7 +13,7 @@ const HomeMiddleSection = () => {
         <Invoice type="pending" />
         <Invoice type="draft" />
       </div>
-    </div>
+    </PagesContainer>
   )
 }
 

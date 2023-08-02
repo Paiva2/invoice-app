@@ -4,7 +4,7 @@ import React from "react"
 
 const FilterBar = () => {
   return (
-    <div className="flex flex-col w-[45%] py-20">
+    <div className="flex flex-col w-[45%]">
       <div className="flex items-center justify-between w-full">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold">Invoices</h1>
