@@ -14,6 +14,7 @@ module.exports = {
         "strong-blue": "#252945",
         "dark-blue": "#1e2139",
         "light-purple": "#7c5dfa",
+        "dark-purple": "#141625",
         "hover-purple": "#9277ff",
         "hash-blue": "#7e88c3",
         "spacial-dark": "#0c0e16",
@@ -25,6 +26,15 @@ module.exports = {
         "transparent-orange": "rgba(255,143,0,.0571)",
         "transparent-emerald": "rgba(51,214,159,.0571)",
         "transparent-white": "rgba(223,227,250,.0571)",
+      },
+      keyframes: {
+        openMenuAnimation: {
+          "0%": { transform: "translateX(-115%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
+      },
+      animation: {
+        "open-edit": "openMenuAnimation .3s linear forwards",
       },
     },
   },

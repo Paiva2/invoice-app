@@ -3,9 +3,15 @@ import InvoiceTypePin from "../InvoiceTypePin"
 
 interface InvoiceInformationProps {
   type: "paid" | "pending" | "draft"
+  openEditInvoice: boolean
+  setOpenEditInvoice: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const InvoiceInformationTopBar = ({ type }: InvoiceInformationProps) => {
+const InvoiceInformationTopBar = ({
+  type,
+  openEditInvoice,
+  setOpenEditInvoice,
+}: InvoiceInformationProps) => {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="bg-dark-blue p-8 rounded-lg flex justify-between items-center">
@@ -17,6 +23,7 @@ const InvoiceInformationTopBar = ({ type }: InvoiceInformationProps) => {
 
         <div className="flex items-center gap-2.5">
           <button
+            onClick={() => setOpenEditInvoice(!openEditInvoice)}
             className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
             type="button"
           >

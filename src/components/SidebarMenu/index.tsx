@@ -4,7 +4,7 @@ import React from "react"
 
 const SidebarMenu = () => {
   return (
-    <div className="h-screen flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between">
+    <div className="h-screen flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between z-50">
       <button
         type="button"
         className="group/logo p-[2.5rem] relative bg-light-purple flex items-center justify-center w-full rounded-r-[20px] overflow-hidden [&>svg]:z-20"
