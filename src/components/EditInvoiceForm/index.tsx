@@ -2,6 +2,7 @@ import PlusIcon from "@/icons/PlusIcon"
 import TrashIcon from "@/icons/TrashIcon"
 import React from "react"
 import CustomInput from "../CustomInput"
+import ItemList from "./ItemList"
 
 interface EditFormProps {
   openEditInvoice: boolean
@@ -49,48 +50,7 @@ const EditInvoiceForm = ({ openEditInvoice, setOpenEditInvoice }: EditFormProps)
         <CustomInput label="Project Description" inputType="text" />
       </div>
 
-      <div>
-        <h2 className="text-2xl font-semibold text-[#777f98]">Item List</h2>
-        <div className="flex items-center gap-2.5 justify-between [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded">
-          <label className="w-[35%]">
-            Item Name
-            <input className="w-[100%]" type="text" />
-          </label>
-
-          <label className="flex-1">
-            Qty
-            <input type="text" className="w-[100%]" />
-          </label>
-
-          <label className="flex-1">
-            Price
-            <input type="text" className="w-[100%]" />
-          </label>
-
-          <div className="flex flex-1 justify-evenly h-full">
-            <div className="h-full flex flex-col items-center">
-              <p className="self-start">Total</p>
-              <span className="flex justify-center items-center h-full w-full font-bold">
-                $156.00
-              </span>
-            </div>
-            <button
-              className="[&>svg]:transition [&>svg]:duration-200 [&>svg]:ease-in-out [&>svg]:fill-hash-blue hover:[&>svg]:fill-light-red"
-              type="button"
-            >
-              <TrashIcon />
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="flex items-baseline gap-1 w-full justify-center bg-dark-blue rounded-3xl p-3 transition duration-150 ease-in-out [&>svg]:fill-pure-white border border-transparent hover:border-light-purple"
-        >
-          <PlusIcon />
-          Add new Item
-        </button>
-      </div>
+      <ItemList />
 
       <div className="self-end">
         <div className="flex gap-2.5">

@@ -85,7 +85,7 @@ const InvoiceInformations = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] transition ease-in-out h-full overflow-y-auto animate-open-edit"
+            className="bg-dark-purple w-[40%] h-full overflow-y-auto animate-open-edit"
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold">

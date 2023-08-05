@@ -29,7 +29,7 @@ module.exports = {
       },
       keyframes: {
         openMenuAnimation: {
-          "0%": { transform: "translateX(-115%)" },
+          "0%": { transform: "translateX(-120%)" },
           "100%": { transform: "translateX(0%)" },
         },
       },
