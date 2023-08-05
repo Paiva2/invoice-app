@@ -63,6 +63,7 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
       <ItemList />
       <div className="flex flex-row justify-between">
         <button
+          onClick={() => setOpenNewInvoice(!openNewInvoice)}
           type="button"
           className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
         >
