@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        spartan: ["var(--font-spartan)"],
+        spartan: "var(--font-spartan)",
       },
       colors: {
         "strong-blue": "#252945",

@@ -6,3 +6,68 @@ body {
   webkit-font-smoothing: antialiased;
   background-color: #141625;
 }
+
+.react-datepicker {
+  @apply border-0 bg-dark-blue !important;
+}
+
+.react-datepicker__month-container {
+  @apply p-4 rounded-lg !important;
+
+  box-shadow: 0 10px 20px rgba(72, 84, 159, 0.25);
+}
+
+.react-datepicker__navigation {
+  @apply top-[1.6875rem] text-light-purple !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  @apply border-light-purple !important;
+}
+
+.react-datepicker__day-names {
+  @apply hidden;
+}
+
+.react-datepicker__triangle {
+  @apply hidden;
+}
+
+.react-datepicker__month-container,
+.react-datepicker__header {
+  @apply bg-dark-blue border-0 font-bold !important;
+  font-family: "__League_Spartan_b52867" !important;
+}
+
+.react-datepicker__header {
+  @apply p-3 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day {
+  @apply text-pure-white text-base !important;
+}
+
+.react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
+  @apply text-light-purple bg-transparent !important;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-[#717171] !important;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-transparent text-light-purple !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply bg-transparent !important;
+}
+
+.react-datepicker__calendar-icon {
+  @apply fill-light-purple w-[2.1875rem] h-[2.1875rem] right-1 top-[10%] !important;
+}
+
+.react-datepicker__view-calendar-icon input {
+  @apply p-3 !important;
+}
