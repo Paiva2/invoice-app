@@ -15,32 +15,26 @@ interface NewInvoiceProps {
 }
 
 const newInvoiceSchema = z.object({
-  streetAddressFrom: z.string(),
-  city: z.string(),
-  postalCodeFrom: z.string(),
-  countryFrom: z.string(),
-  clientName: z.string(),
-  clientEmail: z.string(),
-  streetAddressTo: z.string(),
-  cityTo: z.string(),
-  postalCodeTo: z.string(),
-  countryTo: z.string(),
-  paymentTerms: z.string(),
+  streetAddressFrom: z.string().min(1, { message: "Can't be empty!" }),
+  city: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeFrom: z.string().min(1, { message: "Can't be empty!" }),
+  countryFrom: z.string().min(1, { message: "Can't be empty!" }),
+  clientName: z.string().min(1, { message: "Can't be empty!" }),
+  clientEmail: z.string().min(1, { message: "Can't be empty!" }),
+  streetAddressTo: z.string().min(1, { message: "Can't be empty!" }),
+  cityTo: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeTo: z.string().min(1, { message: "Can't be empty!" }),
+  countryTo: z.string().min(1, { message: "Can't be empty!" }),
+  paymentTerms: z.string().min(1, { message: "Can't be empty!" }),
   projectDescription: z.string(),
-  itemName: z.string(),
-  itemQuantity: z.string(),
-  itemPrice: z.string(),
+  itemName: z.string().min(1, { message: "Can't be empty!" }),
+  itemQuantity: z.string().min(1, { message: "Can't be empty!" }),
+  itemPrice: z.string().min(1, { message: "Can't be empty!" }),
 })
 
 export type NewInvoiceType = z.infer<typeof newInvoiceSchema>
 
 const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) => {
-  const {
-    formState: { errors },
-  } = useForm<NewInvoiceType>({
-    resolver: zodResolver(newInvoiceSchema),
-  })
-
   const methods = useForm<NewInvoiceType>({
     resolver: zodResolver(newInvoiceSchema),
   })
@@ -48,14 +42,18 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
   const [startDate, setStartDate] = useState<Date | null>(new Date())
 
   const handleSubmitInvoice = (data: NewInvoiceType) => {
-    console.log(data)
+    console.log(data, "normal invoice")
+  }
+
+  const handleSaveDraft = (data) => {
+    console.log(data, "draft")
   }
 
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={methods?.handleSubmit(handleSubmitInvoice)}
-        className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5 [&>div>label]:flex [&>div>label]:flex-col [&>div>label]:gap-2 [&>div>label>input]:bg-dark-blue [&>div>label>input]:p-3 [&>div>label>input]:rounded"
+        className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5 [&>div>label]:flex [&>div>label]:flex-col  [&>div>label>input]:bg-dark-blue [&>div>label>input]:p-3 [&>div>label>input]:rounded"
       >
         <div>
           <p className="text-light-purple font-semibold">Bill From</p>
@@ -137,7 +135,7 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
           />
         </div>
 
-        <ItemList registerNames={["itemName", "itemQuantity", "itemPrice"]} />
+        <ItemList />
 
         <div className="flex flex-row justify-between">
           <button
@@ -150,8 +148,8 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
           <div className="self-end">
             <div className="flex gap-2.5">
               <button
-                type="button"
-                onClick={() => setOpenNewInvoice(!openNewInvoice)}
+                type="submit"
+                onClick={methods?.handleSubmit(handleSaveDraft)}
                 className="bg-strong-blue rounded-3xl  transition duration-150 ease-in-out py-1.5 px-6 font-semibold leading-9 hover:bg-dark-blue"
               >
                 Save as Draft
