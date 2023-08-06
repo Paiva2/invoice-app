@@ -1,7 +1,10 @@
+"use client"
 import SidebarMenu from "@/components/SidebarMenu"
 import "./globals.css"
 import type { Metadata } from "next"
 import { League_Spartan } from "next/font/google"
+import { SessionProvider } from "next-auth/react"
+import { NextAuthProvider } from "./providers"
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -15,17 +18,18 @@ export const metadata: Metadata = {
   description: "Invoice App Home",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayout {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayout) {
   return (
     <html lang="en-US">
-      <body
-        style={{
-          display: "flex",
-        }}
-        className={leagueSpartan.className}
-      >
-        <SidebarMenu />
-        {children}
+      <body className={`${leagueSpartan.className} flex`}>
+        <SessionProvider>
+          <SidebarMenu />
+          <NextAuthProvider>{children}</NextAuthProvider>
+        </SessionProvider>
       </body>
     </html>
   )
