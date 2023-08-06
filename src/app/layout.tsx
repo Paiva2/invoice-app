@@ -25,7 +25,7 @@ interface RootLayout {
 export default function RootLayout({ children }: RootLayout) {
   return (
     <html lang="en-US">
-      <body className={`${leagueSpartan.className} flex`}>
+      <body suppressHydrationWarning className={`${leagueSpartan.className} flex`}>
         <SessionProvider>
           <SidebarMenu />
           <NextAuthProvider>{children}</NextAuthProvider>
