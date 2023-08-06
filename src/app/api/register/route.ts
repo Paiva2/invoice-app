@@ -12,19 +12,21 @@ interface RequestBody {
   method: string
 }
 
-export async function POST(req: RequestBody) {
-  if (!req.body?.email)
+export async function POST(request: Request) {
+  const res = await request.json()
+
+  if (!res.email)
     return NextResponse.json({ error: "E-mail can't be empty!" }, { status: 422 })
 
-  if (!req.body?.username)
+  if (!res?.username)
     return NextResponse.json({ error: "Username can't be empty!" }, { status: 422 })
 
-  if (!req.body?.password)
+  if (!res?.password)
     return NextResponse.json({ error: "Password can't be empty!" }, { status: 422 })
 
   const isEmailAlreadyRegistered = await prisma.user.findUnique({
     where: {
-      email: req.body.email,
+      email: res.email,
     },
   })
 
@@ -36,14 +38,14 @@ export async function POST(req: RequestBody) {
   }
 
   const saltRounds = 10
-  const passwordToHash = req.body.password
+  const passwordToHash = res.password
 
   const hashedPassword = bcrypt.hashSync(passwordToHash, saltRounds)
 
   await prisma.user.create({
     data: {
-      name: req.body.username,
-      email: req.body.email,
+      name: res.username,
+      email: res.email,
       password: hashedPassword,
     },
   })

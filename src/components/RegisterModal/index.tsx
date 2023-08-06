@@ -2,10 +2,14 @@
 import React, { FormEvent, useState } from "react"
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import Link from "next/link"
-import axios from "axios"
+import { api } from "@/lib/api"
+import { ToastContainer, toast } from "react-toastify"
+
+import "react-toastify/dist/ReactToastify.css"
+import triggerToastSucess from "@/utils/toast"
 
 const RegisterModal = () => {
-  const [registerFields, setRegisterFields] = useState({
+  const registerSchema = {
     email: {
       value: "",
       error: false,
@@ -22,7 +26,9 @@ const RegisterModal = () => {
       value: "",
       error: false,
     },
-  })
+  }
+
+  const [registerFields, setRegisterFields] = useState(registerSchema)
 
   function updateFieldValues(field: string, value: string) {
     setRegisterFields((oldValue) => ({
@@ -34,12 +40,27 @@ const RegisterModal = () => {
     }))
   }
 
+  console.log(registerFields)
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     try {
-      //axios.post()
-    } catch {}
+      const registerBody = {
+        email: registerFields.email.value,
+        username: registerFields.username.value,
+        password: registerFields.password.value,
+      }
+
+      console.log(registerFields.email.value)
+
+      await api.post("/register", registerBody)
+
+      triggerToastSucess("Register successful!")
+    } catch (error) {
+      alert(error)
+      console.error("There was an error creating the account.")
+    }
   }
 
   return (
@@ -105,7 +126,7 @@ const RegisterModal = () => {
                 }
                 id="confirm-password"
                 name="confirm-password"
-                type="confirm-password"
+                type="password"
                 className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Confirm your password"
               />
@@ -139,6 +160,7 @@ const RegisterModal = () => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   )
 }
