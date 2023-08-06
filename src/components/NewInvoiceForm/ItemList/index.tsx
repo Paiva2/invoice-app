@@ -88,6 +88,7 @@ const ItemList = () => {
                   onChange={({ target }) =>
                     handleEditValueFromInput(idx, "quantity", target.value)
                   }
+                  type="number"
                   defaultValue={item.quantity}
                   className="w-full font-semibold"
                 />
@@ -101,6 +102,7 @@ const ItemList = () => {
                   }
                   defaultValue={item.price}
                   className="w-full font-semibold"
+                  type="number"
                 />
               </label>
               <label className="flex-1 min-h-[5.625rem]">

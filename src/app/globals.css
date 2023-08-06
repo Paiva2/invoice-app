@@ -65,9 +65,18 @@ body {
 }
 
 .react-datepicker__calendar-icon {
-  @apply fill-light-purple w-[2.1875rem] h-[2.1875rem] right-1 top-[10%] !important;
+  @apply fill-hash-blue w-[2.1875rem] h-[2.1875rem] right-1 top-[10%] !important;
 }
 
 .react-datepicker__view-calendar-icon input {
   @apply p-3 !important;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }

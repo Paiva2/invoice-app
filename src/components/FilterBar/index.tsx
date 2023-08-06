@@ -5,6 +5,7 @@ import PlusSymbol from "@/icons/PlusSymbol"
 import React, { MouseEvent, useState } from "react"
 import NewInvoiceForm from "../NewInvoiceForm"
 import { tv as tailwindVariants } from "tailwind-variants"
+import { arrowRotation } from "@/utils/tailwindVariants"
 
 const filterVisibility = tailwindVariants({
   base: "absolute bg-strong-blue rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out left-[-15%] top-full py-5 px-7 w-[65%] [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadow-[0px_10px_20px_0px_rgba(0,0,0,.25)]",
@@ -50,11 +51,16 @@ const FilterBar = () => {
           <button
             type="button"
             onClick={() => setOpenFilterBar(!openFilterBar)}
-            className={`flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm [&>svg]:${
-              openFilterBar ? "rotate-180" : "rotate-0"
-            }`}
+            className="flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm"
           >
-            Filter by status <ArrowDown />
+            Filter by status{" "}
+            <span
+              className={arrowRotation({
+                arrowRotate: openFilterBar ? "rotate" : "normal",
+              })}
+            >
+              <ArrowDown />
+            </span>
           </button>
 
           <ul
