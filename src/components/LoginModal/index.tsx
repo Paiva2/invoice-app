@@ -1,10 +1,29 @@
 "use client"
 
 import { RedirectIcon } from "@/icons/RedirectIcon"
+import axios from "axios"
 import Link from "next/link"
 import React from "react"
+import { useForm } from "react-hook-form"
 
 const LoginModal = () => {
+  const { register, handleSubmit } = useForm()
+
+  async function handleLogin(data) {
+    const loginSchema = {
+      email: data.email,
+      password: data.password,
+    }
+
+    try {
+      const response = await axios.post("/api/login", loginSchema)
+
+      console.log(response)
+    } catch {
+      console.error("There was an error logging in...")
+    }
+  }
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-2/5 bg-strong-blue p-8 rounded-xl">
@@ -21,14 +40,14 @@ const LoginModal = () => {
             <span className="font-semibold mt-1">Login with Github</span>
           </button>
         </div>
-        <form action="" className="my-10">
+        <form onSubmit={handleSubmit(handleLogin)} className="my-10">
           <div className="flex flex-col space-y-5">
             <label>
               <p className="font-medium text-pure-white pb-2">Email address</p>
               <input
                 id="email"
-                name="email"
                 type="email"
+                {...register("email")}
                 className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter email address"
               />
@@ -37,8 +56,8 @@ const LoginModal = () => {
               <p className="font-medium text-pure-white pb-2">Password</p>
               <input
                 id="password"
-                name="password"
                 type="password"
+                {...register("password")}
                 className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter your password"
               />

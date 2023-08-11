@@ -1,19 +1,15 @@
 import { prisma } from "@/lib/prisma"
-import type { NextApiRequest, NextApiResponse } from "next"
 import bcrypt from "bcrypt"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-interface RequestBody {
-  body: {
-    email: string
-    password: string
-    username: string
-  }
-  method: string
+interface RegisterRequestBody {
+  email: string
+  password: string
+  username: string
 }
 
-export async function POST(request: Request) {
-  const res = await request.json()
+export async function POST(request: NextRequest) {
+  const res = (await request.json()) as RegisterRequestBody
 
   if (!res.email)
     return NextResponse.json({ error: "E-mail can't be empty!" }, { status: 422 })
