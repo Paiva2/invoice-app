@@ -40,8 +40,6 @@ const RegisterModal = () => {
     }))
   }
 
-  console.log(registerFields)
-
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
@@ -52,13 +50,10 @@ const RegisterModal = () => {
         password: registerFields.password.value,
       }
 
-      console.log(registerFields.email.value)
-
       await api.post("/register", registerBody)
 
       triggerToastSucess("Register successful!")
     } catch (error) {
-      alert(error)
       console.error("There was an error creating the account.")
     }
   }

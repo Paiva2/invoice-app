@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   const hashedPassword = bcrypt.hashSync(passwordToHash, saltRounds)
 
-  await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       name: res.username,
       email: res.email,
@@ -50,5 +50,14 @@ export async function POST(request: Request) {
     },
   })
 
-  return NextResponse.json({ message: "Register successful!" }, { status: 201 })
+  return new NextResponse(
+    JSON.stringify({
+      status: "success",
+      data: { user: { ...newUser, password: undefined } },
+    }),
+    {
+      status: 201,
+      headers: { "Content-Type": "application/json" },
+    }
+  )
 }
