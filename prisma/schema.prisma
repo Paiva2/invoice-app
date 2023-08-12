@@ -22,7 +22,9 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId String?
 
   @@unique([provider, providerAccountId])
 }
@@ -32,17 +34,10 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+  invoiceId    String?
 
-model User {
-  id       String    @id @default(cuid())
-  name     String?
-  email    String?   @unique
-  password String
-  image    String?
-  accounts Account[]
-  sessions Session[]
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Invoice Invoice? @relation(fields: [invoiceId], references: [id])
 }
 
 model VerificationToken {
@@ -51,4 +46,50 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model User {
+  id       String    @id @default(cuid())
+  name     String
+  email    String    @unique
+  password String
+  image    String?
+  invoices Invoice[]
+  accounts Account[]
+  sessions Session[]
+}
+
+model Invoice {
+  id                   String            @id @default(cuid())
+  streetAddress        String?           @db.Text
+  streetFrom           String?           @db.Text
+  cityFrom             String?           @db.Text
+  postalCodeFrom       String?           @db.Text
+  countryFrom          String?           @db.Text
+  clientNameTo         String?           @db.Text
+  clientEmailTo        String?           @db.Text
+  streetTo             String?           @db.Text
+  cityTo               String?           @db.Text
+  postalCodeTo         String?           @db.Text
+  countryTo            String?           @db.Text
+  invoiceDateTo        DateTime          @default(now())
+  paymentTermsTo       String?           @db.Text
+  projectDescriptionTo String?           @db.Text
+  itemList             InvoiceItemList[]
+  Account              Account[]
+  Session              Session[]
+  userId               String?
+
+  User User? @relation(fields: [userId], references: [id])
+}
+
+model InvoiceItemList {
+  id        String  @id @default(cuid())
+  name      String?
+  quantity  String?
+  price     Float?
+  total     Float?
+  invoiceId String?
+
+  Invoice Invoice? @relation(fields: [invoiceId], references: [id])
 }
