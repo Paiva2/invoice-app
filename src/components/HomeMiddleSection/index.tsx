@@ -7,7 +7,7 @@ import PagesContainer from "../PagesContainer"
 import { GlobalContext } from "@/context/GlobalContext"
 
 const HomeMiddleSection = () => {
-  const { setUserInformtions, userInformations } = useContext(GlobalContext)
+  const { setUserInformations, userInformations } = useContext(GlobalContext)
 
   return (
     <PagesContainer>

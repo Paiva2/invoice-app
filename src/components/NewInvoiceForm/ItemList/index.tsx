@@ -1,4 +1,3 @@
-import CustomInput from "@/components/CustomInput"
 import PlusIcon from "@/icons/PlusIcon"
 import TrashIcon from "@/icons/TrashIcon"
 import { priceFormatter } from "@/utils/priceFormatter"

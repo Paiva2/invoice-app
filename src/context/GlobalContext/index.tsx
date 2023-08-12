@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, createContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { decodeJwt } from "jose"
+import { JWTPayload, decodeJwt } from "jose"
 import Cookies from "js-cookie"
 
 interface Props {
@@ -11,11 +11,11 @@ interface Props {
 
 interface GlobalContextInterface {
   userInformations: {
-    id: string
+    id: string | JWTPayload
   }
   setUserInformations: Dispatch<
     SetStateAction<{
-      id: string
+      id: JWTPayload | string
     }>
   >
 }
@@ -23,7 +23,9 @@ interface GlobalContextInterface {
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
 
 const GlobalStorage = ({ children }: Props) => {
-  const [userInformations, setUserInformations] = useState({
+  const [userInformations, setUserInformations] = useState<{
+    id: JWTPayload | string
+  }>({
     id: "",
   })
 
@@ -31,9 +33,9 @@ const GlobalStorage = ({ children }: Props) => {
     const authToken = Cookies.get("invoice-app-auth")
 
     if (authToken) {
-      const claims = decodeJwt(authToken)
+      const claimUserId = decodeJwt(authToken)
 
-      console.log(claims)
+      setUserInformations({ id: claimUserId })
     }
   }, [])
 
