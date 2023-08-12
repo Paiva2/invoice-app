@@ -7,6 +7,7 @@ import { League_Spartan } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
 import { NextAuthProvider } from "./providers"
 import GlobalStorage from "@/context/GlobalContext"
+import { QueryClient, QueryClientProvider } from "react-query"
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -14,6 +15,8 @@ const leagueSpartan = League_Spartan({
   variable: "--font-spartan",
   weight: ["400", "500", "600", "700"],
 })
+
+const queryClient = new QueryClient()
 
 export const metadata: Metadata = {
   title: "Invoice App",
@@ -29,10 +32,12 @@ export default function RootLayout({ children }: RootLayout) {
     <html lang="en-US">
       <body suppressHydrationWarning className={`${leagueSpartan.className} flex`}>
         <SessionProvider>
-          <GlobalStorage>
-            <SidebarMenu />
-            <NextAuthProvider>{children}</NextAuthProvider>
-          </GlobalStorage>
+          <QueryClientProvider client={queryClient}>
+            <GlobalStorage>
+              <SidebarMenu />
+              <NextAuthProvider>{children}</NextAuthProvider>
+            </GlobalStorage>
+          </QueryClientProvider>
         </SessionProvider>
       </body>
     </html>

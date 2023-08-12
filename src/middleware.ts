@@ -47,11 +47,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/invoice/:slug*",
-    "/invoices",
-    "/login",
-    "/register",
-    "/forgot-password",
-  ],
+  matcher: ["/invoice/:slug*", "/login", "/register", "/forgot-password"],
 }

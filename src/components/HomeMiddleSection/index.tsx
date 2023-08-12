@@ -1,30 +1,44 @@
 "use client"
 
-import React, { useContext, useEffect } from "react"
+import React, { useContext } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
 import { GlobalContext } from "@/context/GlobalContext"
-import axios from "axios"
+import { api } from "@/lib/api"
+import { useQuery } from "react-query"
+import { InvoiceSchema } from "../../../types"
+
+interface UserInvoice {
+  status: string
+  userInvoices: Array<InvoiceSchema>
+}
 
 const HomeMiddleSection = () => {
-  const { setUserInformations, userInformations } = useContext(GlobalContext)
+  const { userInformations } = useContext(GlobalContext)
 
-  useEffect(() => {
-    console.log(userInformations.id)
-    axios
-      .post("/api/invoices", { id: userInformations.id })
-      .then((response) => console.log(response.data))
-  }, [userInformations])
+  const {
+    data: invoices,
+    isLoading,
+    isError,
+  } = useQuery<UserInvoice>(
+    "userInvoices",
+    async () => {
+      const response = await api.post("/invoices", { id: userInformations.id })
+
+      return response.data
+    },
+    { enabled: !!userInformations.id }
+  )
 
   return (
     <PagesContainer>
       <FilterBar />
 
       <div className="flex flex-col w-[45%] gap-3.5">
-        <Invoice type="paid" />
-        <Invoice type="pending" />
-        <Invoice type="draft" />
+        {invoices?.userInvoices.map((invoice) => {
+          return <Invoice key={invoice.id} userInvoice={invoice} />
+        })}
       </div>
     </PagesContainer>
   )

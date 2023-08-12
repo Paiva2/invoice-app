@@ -5,23 +5,23 @@ interface RequestInvoiceBody {
   id: string
 }
 
-export async function POST(request: NextRequest) {
-  const res = (await request.json()) as RequestInvoiceBody
+export async function POST(req: NextRequest) {
+  const res = (await req.json()) as RequestInvoiceBody
 
   const findUserOnDatabase = await prisma.user.findUnique({
     where: {
       id: res.id,
     },
-    include: {
-      invoices: true,
+    select: {
+      invoices: { include: { itemList: true } },
     },
   })
 
-  if (findUserOnDatabase === null) {
+  if (!findUserOnDatabase) {
     return NextResponse.json({ error: "User not found." }, { status: 401 })
   }
 
-  const response = new NextResponse(
+  return new NextResponse(
     JSON.stringify({
       status: "success",
       userInvoices: findUserOnDatabase?.invoices,
@@ -31,6 +31,4 @@ export async function POST(request: NextRequest) {
       headers: { "Content-Type": "application/json" },
     }
   )
-
-  return response
 }
