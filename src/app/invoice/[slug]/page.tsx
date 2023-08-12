@@ -7,9 +7,42 @@ import PagesContainer from "@/components/PagesContainer"
 import ArrowLeft from "@/icons/ArrowLeft"
 import Link from "next/link"
 import React, { useState } from "react"
+import { InvoiceSchema } from "../../../../types"
+import { useQuery } from "react-query"
+import { api } from "@/lib/api"
+import dayjs from "dayjs"
 
-const InvoiceInformations = () => {
+interface SingleInvoice {
+  params: {
+    slug: string
+  }
+}
+
+const InvoiceInformations = ({ params }: SingleInvoice) => {
   const [openEditInvoice, setOpenEditInvoice] = useState(false)
+
+  const {
+    data: invoice,
+    isLoading,
+    isError,
+  } = useQuery<InvoiceSchema>(
+    "singleInvoice",
+    async () => {
+      const response = await api.post("/invoice", { id: params.slug })
+
+      return response.data.data
+    },
+
+    { enabled: !!params.slug }
+  )
+
+  if (isLoading || isError || !invoice) return
+
+  const dueDate = new Date(invoice.invoiceDateTo)
+  const creationDate = new Date(invoice.createdAt)
+
+  const formatDueDate = dayjs(dueDate).format("DD/MMM/YYYY").split("/")
+  const formatCreationDate = dayjs(creationDate).format("DD/MMM/YYYY").split("/")
 
   return (
     <PagesContainer>
@@ -32,9 +65,10 @@ const InvoiceInformations = () => {
           <div className="flex justify-between">
             <div className="text-sm">
               <p className="font-bold">
-                <span className="text-hash-blue">#</span>XM9141
+                <span className="text-hash-blue">#</span>
+                {invoice?.id}
               </p>
-              <p>Graphic Design</p>
+              <p>{invoice?.projectDescriptionTo}</p>
             </div>
 
             <div className="flex flex-col text-sm">
@@ -45,22 +79,31 @@ const InvoiceInformations = () => {
             </div>
           </div>
 
-          <div className="flex gap-10 justify-between flex-wrap">
+          <div className="flex gap-10 justify-between flex-wrap break-words">
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
                 <p className="text-sm">Invoice Date</p>
-                <h2 className="font-bold text-xl">20 Aug 2021</h2>
+                <h2 className="font-bold text-xl">
+                  {formatCreationDate.map((date) => (
+                    <span key={date}>{date} </span>
+                  ))}
+                </h2>
               </div>
               <div className="flex flex-col">
                 <p className="text-sm">Payment Due</p>
-                <h2 className="font-bold text-xl">19 Sep 2021</h2>
+                <h2 className="font-bold text-xl">
+                  {" "}
+                  {formatDueDate.map((date) => (
+                    <span key={date}>{date} </span>
+                  ))}
+                </h2>
               </div>
             </div>
 
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
                 <p className="text-sm">Bill To</p>
-                <h2 className="font-bold text-xl">Alex Grim</h2>
+                <h2 className="font-bold text-xl">{invoice?.clientNameTo}</h2>
               </div>
               <div className="flex flex-col text-sm">
                 <p>84 Church Way</p>
@@ -70,12 +113,12 @@ const InvoiceInformations = () => {
               </div>
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col max-w[12.5rem]">
               <p className="text-sm">Sent To</p>
-              <h2 className="font-bold text-xl">alexgrim@mail.com</h2>
+              <h2 className="font-bold text-xl">{invoice?.clientEmailTo}</h2>
             </div>
           </div>
-          <AmountTable />
+          <AmountTable itemList={invoice?.itemList} />
         </div>
       </div>
       {openEditInvoice && (

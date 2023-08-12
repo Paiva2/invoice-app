@@ -1,5 +1,6 @@
 export interface InvoiceSchema {
   id: string
+  createdAt: Date
   cityFrom: string
   cityTo: string
   clientEmailTo: string
@@ -14,11 +15,13 @@ export interface InvoiceSchema {
   streetFrom: string
   streetTo: string
   status: "pending" | "draft" | "paid"
-  itemList: Array<{
-    id: string
-    invoiceId: string
-    name: string
-    quantity: string
-    total: number
-  }>
+  itemList: Array<InvoiceItemList>
+}
+
+export interface InvoiceItemList {
+  id: string
+  invoiceId: string
+  name: string
+  quantity: string
+  price: number
 }

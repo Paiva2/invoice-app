@@ -65,21 +65,22 @@ model User {
 
 model Invoice {
   id                   String            @id @default(cuid())
+  createdAt            DateTime          @default(now())
   status               String            @default("pending")
-  streetFrom           String?           @db.Text
   userId               String?
+  streetFrom           String?           @db.Text
   cityFrom             String?           @db.Text
-  cityTo               String?           @db.Text
-  clientEmailTo        String?           @db.Text
-  clientNameTo         String?           @db.Text
+  postalCodeFrom       String?           @db.Text
   countryFrom          String?           @db.Text
+  clientNameTo         String?           @db.Text
+  clientEmailTo        String?           @db.Text
+  streetTo             String?           @db.Text
+  cityTo               String?           @db.Text
+  postalCodeTo         String?           @db.Text
   countryTo            String?           @db.Text
   invoiceDateTo        DateTime          @default(now())
   paymentTermsTo       String?           @db.Text
-  postalCodeFrom       String?           @db.Text
-  postalCodeTo         String?           @db.Text
   projectDescriptionTo String?           @db.Text
-  streetTo             String?           @db.Text
   Account              Account[]
   User                 User?             @relation(fields: [userId], references: [id])
   itemList             InvoiceItemList[]
@@ -93,7 +94,6 @@ model InvoiceItemList {
   name      String?
   quantity  String?
   price     Float?
-  total     Float?
   invoiceId String?
   Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
 
