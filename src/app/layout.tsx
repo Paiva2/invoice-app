@@ -1,10 +1,12 @@
 "use client"
+
 import SidebarMenu from "@/components/SidebarMenu"
 import "./globals.css"
 import type { Metadata } from "next"
 import { League_Spartan } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
 import { NextAuthProvider } from "./providers"
+import GlobalStorage from "@/context/GlobalContext"
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -27,8 +29,10 @@ export default function RootLayout({ children }: RootLayout) {
     <html lang="en-US">
       <body suppressHydrationWarning className={`${leagueSpartan.className} flex`}>
         <SessionProvider>
-          <SidebarMenu />
-          <NextAuthProvider>{children}</NextAuthProvider>
+          <GlobalStorage>
+            <SidebarMenu />
+            <NextAuthProvider>{children}</NextAuthProvider>
+          </GlobalStorage>
         </SessionProvider>
       </body>
     </html>

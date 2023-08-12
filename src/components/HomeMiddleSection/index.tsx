@@ -1,9 +1,14 @@
-import React from "react"
+"use client"
+
+import React, { useContext } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
+import { GlobalContext } from "@/context/GlobalContext"
 
 const HomeMiddleSection = () => {
+  const { setUserInformtions, userInformations } = useContext(GlobalContext)
+
   return (
     <PagesContainer>
       <FilterBar />

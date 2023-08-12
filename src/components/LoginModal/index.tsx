@@ -5,11 +5,24 @@ import axios from "axios"
 import Link from "next/link"
 import React from "react"
 import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+
+const loginFormSchema = z.object({
+  email: z.string().email().min(1, { message: "Can't be empty!" }),
+  password: z.string().min(1, { message: "Can't be empty!" }),
+})
+
+export type NewLoginType = z.infer<typeof loginFormSchema>
 
 const LoginModal = () => {
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit } = useForm<NewLoginType>({
+    resolver: zodResolver(loginFormSchema),
+  })
+  const route = useRouter()
 
-  async function handleLogin(data) {
+  async function handleLogin(data: NewLoginType) {
     const loginSchema = {
       email: data.email,
       password: data.password,
@@ -18,7 +31,9 @@ const LoginModal = () => {
     try {
       const response = await axios.post("/api/login", loginSchema)
 
-      console.log(response)
+      if (response.status === 200) {
+        route.push("/invoices")
+      }
     } catch {
       console.error("There was an error logging in...")
     }

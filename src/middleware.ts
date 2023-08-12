@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { verifyJWT } from "@/lib/token"
 
-interface AuthenticatedRequest extends NextRequest {
-  user: {
-    id: string
-  }
-}
-
 let redirectToLogin = false
 
 export async function middleware(req: NextRequest) {
@@ -33,11 +27,9 @@ export async function middleware(req: NextRequest) {
 
   try {
     if (token) {
-      const { sub } = await verifyJWT<{ sub: string }>(token)
+      const { id } = await verifyJWT<{ id: string }>(token)
 
-      response.headers.set("X-USER-ID", sub)
-
-      return ((req as AuthenticatedRequest).user = { id: sub })
+      response.headers.set("X-USER-ID", id)
     }
   } catch (error) {
     redirectToLogin = true
@@ -47,21 +39,7 @@ export async function middleware(req: NextRequest) {
     )
   }
 
-  const authUser = (req as AuthenticatedRequest).user
-
-  if (!authUser) {
-    return NextResponse.redirect(
-      new URL(
-        `/login?${new URLSearchParams({
-          error: "noauth",
-          forceLogin: "true",
-        })}`,
-        req.url
-      )
-    )
-  }
-
-  if (req.url.includes("/login") && authUser) {
+  if (req.url.includes("/login") && token) {
     return NextResponse.redirect(new URL("/invoices", req.url))
   }
 
@@ -69,5 +47,11 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/invoice/:slug*",
+    "/invoices",
+    "/login",
+    "/register",
+    "/forgot-password",
+  ],
 }

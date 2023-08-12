@@ -24,28 +24,30 @@ export async function POST(request: NextRequest) {
   })
 
   if (!findUserOnDatabase) {
-    return NextResponse.json({ error: "E-mail not found!" }, { status: 409 })
+    return NextResponse.json({ error: "E-mail not found!" }, { status: 401 })
   }
 
-  const passwordMatches = bcrypt.compare(res.password, findUserOnDatabase.password)
+  const passwordMatches = await bcrypt.compare(
+    res.password,
+    findUserOnDatabase?.password
+  )
 
   if (!passwordMatches) {
-    return NextResponse.json({ error: "Invalid password!" }, { status: 409 })
+    return NextResponse.json({ error: "Invalid password!" }, { status: 401 })
   }
 
   const JWTExpiration = 1000 * 60 * 60 * 24 * 7 // 7 days
 
   const JWTToken = await signJWT(
-    { sub: findUserOnDatabase.id },
+    { id: findUserOnDatabase.id },
     { exp: `${JWTExpiration}s` }
   )
 
   const cookieOptions = {
     name: "invoice-app-auth",
     value: JWTToken,
-    httpOnly: true,
+    httpOnly: false,
     path: "/",
-    secure: process.env.NODE_ENV !== "development",
     maxAge: JWTExpiration,
   }
 
