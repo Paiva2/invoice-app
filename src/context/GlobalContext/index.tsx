@@ -35,7 +35,7 @@ const GlobalStorage = ({ children }: Props) => {
     if (authToken) {
       const claimUserId = decodeJwt(authToken)
 
-      setUserInformations({ id: claimUserId })
+      setUserInformations({ id: claimUserId.id })
     }
   }, [])
 
