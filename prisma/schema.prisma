@@ -90,12 +90,11 @@ model Invoice {
 }
 
 model InvoiceItemList {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   name      String?
   quantity  String?
-  price     Float?
+  price     String?
   invoiceId String?
-  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
 
-  @@index([invoiceId], map: "InvoiceItemList_invoiceId_fkey")
+  Invoice Invoice? @relation(fields: [invoiceId], references: [id])
 }

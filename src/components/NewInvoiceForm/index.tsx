@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import CustomInput from "../CustomInput"
 import ItemList from "./ItemList"
 import { useState } from "react"
@@ -11,6 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import ArrowDown from "@/icons/ArrowDown"
 import { tv } from "tailwind-variants"
 import { arrowRotation } from "@/utils/tailwindVariants"
+import { useMutation, useQuery } from "react-query"
+import { api } from "@/lib/api"
+import { GlobalContext } from "@/context/GlobalContext"
+import { InvoiceSchema } from "../../../types"
+import { generateRandomID } from "@/utils/randomId"
 interface NewInvoiceProps {
   openNewInvoice: boolean
   setOpenNewInvoice: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,9 +33,6 @@ const newInvoiceSchema = z.object({
   postalCodeTo: z.string().min(1, { message: "Can't be empty!" }),
   countryTo: z.string().min(1, { message: "Can't be empty!" }),
   projectDescription: z.string(),
-  itemName: z.string().min(1, { message: "Can't be empty!" }),
-  itemQuantity: z.string().min(1, { message: "Can't be empty!" }),
-  itemPrice: z.string().min(1, { message: "Can't be empty!" }),
 })
 
 export type NewInvoiceType = z.infer<typeof newInvoiceSchema>
@@ -53,6 +55,10 @@ export const paymentsVisibility = tv({
 })
 
 const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) => {
+  const { itemFromListValues, userInformations } = useContext(GlobalContext)
+
+  if (!userInformations.id) return
+
   const methods = useForm<NewInvoiceType>({
     resolver: zodResolver(newInvoiceSchema),
   })
@@ -62,10 +68,37 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
   const [paymentTermWatcher, setPaymentTermWatcher] = useState(paymentTerms[0])
   const [openPaymentTerms, setOpenPaymentTerms] = useState(false)
 
-  const [startDate, setStartDate] = useState<Date | null>(new Date())
+  const [DueDate, setDueDate] = useState<Date>(new Date())
+
+  const createNewInvoice = useMutation({
+    mutationFn: (newInvoice: InvoiceSchema) => {
+      return api.post("/new-invoice", {
+        invoice: newInvoice,
+        userId: userInformations.id,
+      })
+    },
+  })
 
   const handleSubmitInvoice = (data: NewInvoiceType) => {
-    console.log(data, "normal invoice")
+    const newInvoiceSchema = {
+      id: generateRandomID(),
+      streetFrom: data.streetAddressFrom,
+      cityFrom: data.city,
+      postalCodeFrom: data.postalCodeFrom,
+      countryFrom: data.countryFrom,
+      clientNameTo: data.clientName,
+      clientEmailTo: data.clientEmail,
+      streetTo: data.streetAddressTo,
+      cityTo: data.cityTo,
+      postalCodeTo: data.postalCodeTo,
+      countryTo: data.countryTo,
+      projectDescriptionTo: data.projectDescription,
+      invoiceDateTo: DueDate,
+      paymentTermsTo: paymentTermWatcher,
+      itemList: itemFromListValues,
+    }
+
+    createNewInvoice.mutateAsync(newInvoiceSchema)
   }
 
   const handleSaveDraft = (data: NewInvoiceType) => {
@@ -106,25 +139,21 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
 
         <div>
           <p className="text-light-purple font-semibold">Bill To</p>
-
           <CustomInput
             registerName="clientName"
             label="Client's Name"
             inputType="text"
           />
-
           <CustomInput
             registerName="clientEmail"
             label="Client's e-mail"
             inputType="text"
           />
-
           <CustomInput
             registerName="streetAddressTo"
             label="Street Address"
             inputType="text"
           />
-
           <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded">
             <CustomInput registerName="cityTo" label="City" inputType="text" />
 
@@ -136,58 +165,55 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
 
             <CustomInput registerName="countryTo" label="Country" inputType="text" />
           </div>
-
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            minDate={new Date()}
-            showIcon
-            className="bg-dark-blue text-pure-white rounded p-3 w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0"
-          />
-
-          <div className="bg-dark-blue relative text-pure-white rounded w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0">
-            <button
-              onClick={() => setOpenPaymentTerms(!openPaymentTerms)}
-              className="flex p-3 h-full justify-between w-full items-baseline"
-              type="button"
-            >
-              Net {paymentTermWatcher} day{+paymentTermWatcher > 1 && "s"}
-              <span
-                className={arrowRotation({
-                  arrowRotate: openPaymentTerms ? "rotate" : "normal",
+          <div className="w-full flex-col flex">
+            <span>Invoice Date</span>
+            <DatePicker
+              selected={DueDate}
+              onChange={(date: Date) => setDueDate(date)}
+              minDate={new Date()}
+              showIcon
+              className="bg-dark-blue text-pure-white rounded p-3 w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0"
+            />
+          </div>
+          <div>
+            <span>Payment Terms</span>
+            <div className="bg-dark-blue relative text-pure-white rounded w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0">
+              <button
+                onClick={() => setOpenPaymentTerms(!openPaymentTerms)}
+                className="flex p-3 h-full justify-between w-full items-baseline"
+                type="button"
+              >
+                Net {paymentTermWatcher} day{+paymentTermWatcher > 1 && "s"}
+                <span
+                  className={arrowRotation({
+                    arrowRotate: openPaymentTerms ? "rotate" : "normal",
+                  })}
+                >
+                  <ArrowDown />
+                </span>
+              </button>
+              <ul
+                className={paymentsVisibility({
+                  visibility: openPaymentTerms ? "visible" : "hidden",
                 })}
               >
-                <ArrowDown />
-              </span>
-            </button>
-            <ul
-              className={paymentsVisibility({
-                visibility: openPaymentTerms ? "visible" : "hidden",
-              })}
-            >
-              {paymentTerms.map((days) => {
-                return (
-                  <li
-                    key={days}
-                    onClick={() => {
-                      setPaymentTermWatcher(days),
-                        setOpenPaymentTerms(!openPaymentTerms)
-                    }}
-                    className="border-b cursor-pointer px-2.5 py-2.5 transition border-strong-blue hover:text-light-purple"
-                  >
-                    Net {days} Day{+days > 1 && "s"}
-                  </li>
-                )
-              })}
-            </ul>
+                {paymentTerms.map((days) => {
+                  return (
+                    <li
+                      key={days}
+                      onClick={() => {
+                        setPaymentTermWatcher(days),
+                          setOpenPaymentTerms(!openPaymentTerms)
+                      }}
+                      className="border-b cursor-pointer px-2.5 py-2.5 transition border-strong-blue hover:text-light-purple"
+                    >
+                      Net {days} Day{+days > 1 && "s"}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </div>
-
-          <CustomInput
-            registerName="paymentTerms"
-            label="Payment Terms"
-            inputType="text"
-          />
-
           <CustomInput
             registerName="projectDescription"
             label="Project Description"

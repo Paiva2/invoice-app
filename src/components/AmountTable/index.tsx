@@ -5,7 +5,13 @@ import { InvoiceItemList } from "@prisma/client"
 import React from "react"
 
 interface AmountTableProps {
-  itemList: Array<InvoiceItemList>
+  itemList: {
+    id: string
+    invoiceId: string
+    name: string
+    quantity: string
+    price: number
+  }[]
 }
 
 const AmountTable = ({ itemList }: AmountTableProps) => {

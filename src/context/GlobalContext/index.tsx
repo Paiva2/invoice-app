@@ -1,9 +1,9 @@
 "use client"
 
 import { Dispatch, SetStateAction, createContext, useEffect, useState } from "react"
-import { useQuery } from "react-query"
 import { JWTPayload, decodeJwt } from "jose"
 import Cookies from "js-cookie"
+import { InvoiceItemList } from "../../../types"
 
 interface Props {
   children: React.ReactNode
@@ -13,6 +13,9 @@ interface GlobalContextInterface {
   userInformations: {
     id: string | JWTPayload
   }
+  itemFromListValues: InvoiceItemList[]
+  setItemFromListValues: Dispatch<SetStateAction<InvoiceItemList[]>>
+
   setUserInformations: Dispatch<
     SetStateAction<{
       id: JWTPayload | string
@@ -22,12 +25,21 @@ interface GlobalContextInterface {
 
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
 
+const itemListSchema = {
+  id: "1",
+  name: "New Item",
+  quantity: "1",
+  price: 0,
+}
+
 const GlobalStorage = ({ children }: Props) => {
   const [userInformations, setUserInformations] = useState<{
     id: JWTPayload | string
   }>({
     id: "",
   })
+
+  const [itemFromListValues, setItemFromListValues] = useState([itemListSchema])
 
   useEffect(() => {
     const authToken = Cookies.get("invoice-app-auth")
@@ -43,7 +55,9 @@ const GlobalStorage = ({ children }: Props) => {
     <GlobalContext.Provider
       value={{
         userInformations,
+        itemFromListValues,
         setUserInformations,
+        setItemFromListValues,
       }}
     >
       {children}

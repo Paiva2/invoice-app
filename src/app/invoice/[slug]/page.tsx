@@ -22,7 +22,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   const [openEditInvoice, setOpenEditInvoice] = useState(false)
 
   const {
-    data: invoice,
+    data: invoice = {} as InvoiceSchema,
     isLoading,
     isError,
   } = useQuery<InvoiceSchema>(
@@ -36,7 +36,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
     { enabled: !!params.slug }
   )
 
-  if (isLoading || isError || !invoice) return
+  if (isLoading || isError) return
 
   const dueDate = new Date(invoice.invoiceDateTo)
   const creationDate = new Date(invoice.createdAt)
@@ -58,7 +58,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
         <InvoiceInformationTopBar
           openEditInvoice={openEditInvoice}
           setOpenEditInvoice={setOpenEditInvoice}
-          type="paid"
+          type={invoice.status}
         />
 
         <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8">
@@ -72,10 +72,10 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
             </div>
 
             <div className="flex flex-col text-sm">
-              <p>19 Union Terrace</p>
-              <p>London</p>
-              <p>E1 3EZ</p>
-              <p>United Kingdom</p>
+              <p>{invoice.streetFrom}</p>
+              <p>{invoice.countryFrom}</p>
+              <p>{invoice.postalCodeFrom}</p>
+              <p>{invoice.cityFrom}</p>
             </div>
           </div>
 
@@ -106,10 +106,10 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
                 <h2 className="font-bold text-xl">{invoice?.clientNameTo}</h2>
               </div>
               <div className="flex flex-col text-sm">
-                <p>84 Church Way</p>
-                <p>Bradford</p>
-                <p>BD1 9PB</p>
-                <p>United Kingdom</p>
+                <p>{invoice.streetTo}</p>
+                <p>{invoice.countryTo}</p>
+                <p>{invoice.postalCodeTo}</p>
+                <p>{invoice.cityTo}</p>
               </div>
             </div>
 
@@ -118,7 +118,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
               <h2 className="font-bold text-xl">{invoice?.clientEmailTo}</h2>
             </div>
           </div>
-          <AmountTable itemList={invoice?.itemList} />
+          <AmountTable itemList={invoice.itemList} />
         </div>
       </div>
       {openEditInvoice && (
