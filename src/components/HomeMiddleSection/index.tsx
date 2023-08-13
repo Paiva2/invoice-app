@@ -20,13 +20,19 @@ const HomeMiddleSection = () => {
     data: invoices,
     isLoading,
     isError,
-  } = useQuery<UserInvoice>({
+  } = useQuery<Array<InvoiceSchema>>({
     queryKey: ["getUserInvoices"],
 
     queryFn: async () => {
-      const response = await api.post("/invoices", { id: userInformations.id })
+      const response = await api.post<UserInvoice>("/invoices", {
+        id: userInformations.id,
+      })
 
-      return response.data
+      const sortInvoicesByDate = response.data?.userInvoices.sort((a, b) => {
+        return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
+      })
+
+      return sortInvoicesByDate
     },
 
     enabled: !!userInformations.id,
@@ -38,7 +44,7 @@ const HomeMiddleSection = () => {
     <PagesContainer>
       <FilterBar />
       <div className="flex flex-col w-[75%] gap-3.5 max-w-[55rem] h-[80vh] overflow-y-auto pr-3">
-        {invoices?.userInvoices?.map((invoice) => {
+        {invoices?.map((invoice) => {
           return <Invoice key={invoice.id} userInvoice={invoice} />
         })}
         <div className="text-center flex gap-5 self-end">
