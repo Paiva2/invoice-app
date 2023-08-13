@@ -13,15 +13,18 @@ interface GlobalContextInterface {
   userInformations: {
     id: string | JWTPayload
   }
-  itemFromListValues: InvoiceItemList[]
-  setItemFromListValues: Dispatch<SetStateAction<InvoiceItemList[]>>
-
   setUserInformations: Dispatch<
     SetStateAction<{
       id: JWTPayload | string
     }>
   >
+  itemFromListValues: InvoiceItemList[]
+  setItemFromListValues: Dispatch<SetStateAction<InvoiceItemList[]>>
+
   itemListSchema: InvoiceItemList
+
+  selectedFilters: string[]
+  setSelectedFilter: Dispatch<SetStateAction<string[]>>
 }
 
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
@@ -41,6 +44,7 @@ const GlobalStorage = ({ children }: Props) => {
   })
 
   const [itemFromListValues, setItemFromListValues] = useState([itemListSchema])
+  const [selectedFilters, setSelectedFilter] = useState<string[]>([])
 
   useEffect(() => {
     const authToken = Cookies.get("invoice-app-auth")
@@ -48,7 +52,9 @@ const GlobalStorage = ({ children }: Props) => {
     if (authToken) {
       const claimUserId = decodeJwt(authToken)
 
-      setUserInformations({ id: claimUserId.id })
+      const userId = claimUserId.id as string
+
+      setUserInformations({ id: userId })
     }
   }, [])
 
@@ -58,6 +64,8 @@ const GlobalStorage = ({ children }: Props) => {
         userInformations,
         itemFromListValues,
         itemListSchema,
+        selectedFilters,
+        setSelectedFilter,
         setUserInformations,
         setItemFromListValues,
       }}

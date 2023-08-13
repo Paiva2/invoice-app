@@ -2,10 +2,11 @@
 
 import ArrowDown from "@/icons/ArrowDown"
 import PlusSymbol from "@/icons/PlusSymbol"
-import React, { MouseEvent, useState } from "react"
+import React, { MouseEvent, useContext, useState } from "react"
 import NewInvoiceForm from "../NewInvoiceForm"
 import { tv as tailwindVariants } from "tailwind-variants"
 import { arrowRotation } from "@/utils/tailwindVariants"
+import { GlobalContext } from "@/context/GlobalContext"
 
 const filterVisibility = tailwindVariants({
   base: "absolute bg-strong-blue rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out left-[-15%] top-full py-5 px-7 w-[65%] [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadow-[0px_10px_20px_0px_rgba(0,0,0,.25)]",
@@ -21,9 +22,10 @@ const filterVisibility = tailwindVariants({
 })
 
 const FilterBar = () => {
+  const { selectedFilters, setSelectedFilter } = useContext(GlobalContext)
+
   const [openNewInvoice, setOpenNewInvoice] = useState(false)
   const [openFilterBar, setOpenFilterBar] = useState(false)
-  const [selectedFilters, setSelectedFilter] = useState<string[]>([])
   const filtersTypes = ["Draft", "Pending", "Paid"]
 
   const getSelectedFilters = (e: MouseEvent<HTMLInputElement>) => {
@@ -77,7 +79,7 @@ const FilterBar = () => {
                       onClick={getSelectedFilters}
                       className="w-4 h-4 accent-light-purple cursor-pointer"
                       type="checkbox"
-                      value={filter}
+                      value={filter.toLowerCase()}
                     />
                     {filter}
                   </label>
