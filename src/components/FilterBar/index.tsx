@@ -41,12 +41,13 @@ const FilterBar = () => {
   }
 
   return (
-    <div className="flex flex-col w-[45%]">
-      <div className="flex items-center justify-between w-full">
+    <div className="flex flex-col w-[75%] max-w-[55rem]">
+      <div className="flex items-baseline justify-between w-full">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold">Invoices</h1>
           <p className="text-sm font-light">There are 7 total invoices</p>
         </div>
+
         <div className="flex items-center gap-5 relative">
           <button
             type="button"

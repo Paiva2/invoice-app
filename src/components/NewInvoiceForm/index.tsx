@@ -1,18 +1,17 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import CustomInput from "../CustomInput"
 import ItemList from "./ItemList"
-import { useState } from "react"
 import DatePicker from "react-datepicker"
+import ArrowDown from "@/icons/ArrowDown"
 import "react-datepicker/dist/react-datepicker.css"
 import "react-datepicker/dist/react-datepicker-cssmodules.css"
 import { z } from "zod"
+import { tv } from "tailwind-variants"
+import { api } from "@/lib/api"
+import { useMutation, useQueryClient } from "react-query"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import ArrowDown from "@/icons/ArrowDown"
-import { tv } from "tailwind-variants"
 import { arrowRotation } from "@/utils/tailwindVariants"
-import { useMutation, useQuery } from "react-query"
-import { api } from "@/lib/api"
 import { GlobalContext } from "@/context/GlobalContext"
 import { InvoiceSchema } from "../../../types"
 import { generateRandomID } from "@/utils/randomId"
@@ -55,7 +54,12 @@ export const paymentsVisibility = tv({
 })
 
 const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) => {
-  const { itemFromListValues, userInformations } = useContext(GlobalContext)
+  const {
+    itemFromListValues,
+    userInformations,
+    setItemFromListValues,
+    itemListSchema,
+  } = useContext(GlobalContext)
 
   if (!userInformations.id) return
 
@@ -70,17 +74,28 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
 
   const [DueDate, setDueDate] = useState<Date>(new Date())
 
+  const queryClient = useQueryClient()
+
   const createNewInvoice = useMutation({
     mutationFn: (newInvoice: InvoiceSchema) => {
       return api.post("/new-invoice", {
-        invoice: newInvoice,
         userId: userInformations.id,
+        invoice: newInvoice,
       })
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries("getUserInvoices")
+
+      methods.reset()
+      setPaymentTermWatcher(paymentTerms[0])
+      setOpenPaymentTerms(false)
+      setItemFromListValues([itemListSchema])
     },
   })
 
-  const handleSubmitInvoice = (data: NewInvoiceType) => {
-    const newInvoiceSchema = {
+  const handleSubmitInvoice = async (data: NewInvoiceType) => {
+    const newInvoice = {
       id: generateRandomID(),
       streetFrom: data.streetAddressFrom,
       cityFrom: data.city,
@@ -98,11 +113,30 @@ const NewInvoiceForm = ({ openNewInvoice, setOpenNewInvoice }: NewInvoiceProps) 
       itemList: itemFromListValues,
     }
 
-    createNewInvoice.mutateAsync(newInvoiceSchema)
+    await createNewInvoice.mutateAsync(newInvoice)
   }
 
-  const handleSaveDraft = (data: NewInvoiceType) => {
-    console.log(data, "draft")
+  const handleSaveDraft = async (data: NewInvoiceType) => {
+    const newInvoice = {
+      id: generateRandomID(),
+      streetFrom: data.streetAddressFrom,
+      cityFrom: data.city,
+      postalCodeFrom: data.postalCodeFrom,
+      countryFrom: data.countryFrom,
+      clientNameTo: data.clientName,
+      clientEmailTo: data.clientEmail,
+      streetTo: data.streetAddressTo,
+      cityTo: data.cityTo,
+      postalCodeTo: data.postalCodeTo,
+      countryTo: data.countryTo,
+      projectDescriptionTo: data.projectDescription,
+      invoiceDateTo: DueDate,
+      paymentTermsTo: paymentTermWatcher,
+      itemList: itemFromListValues,
+      status: "draft",
+    }
+
+    await createNewInvoice.mutateAsync(newInvoice)
   }
 
   return (

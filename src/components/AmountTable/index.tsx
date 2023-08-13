@@ -1,7 +1,6 @@
 import getInvoiceTotalSum from "@/utils/getInvoiceTotalSum"
 import getSingleTotalSum from "@/utils/getSingleTotalSum"
 import { priceFormatter } from "@/utils/priceFormatter"
-import { InvoiceItemList } from "@prisma/client"
 import React from "react"
 
 interface AmountTableProps {

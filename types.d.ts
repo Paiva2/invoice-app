@@ -14,7 +14,7 @@ export interface InvoiceSchema {
   projectDescriptionTo: string
   streetFrom: string
   streetTo: string
-  status?: "pending" | "draft" | "paid"
+  status?: string
   itemList: Array<InvoiceItemList>
 }
 

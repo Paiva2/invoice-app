@@ -18,14 +18,14 @@ export const typePin = tv({
 })
 
 interface Props {
-  type: "pending" | "draft" | "paid"
+  type: string
 }
 
 const InvoiceTypePin = ({ type }: Props) => {
   return (
     <span
       className={typePin({
-        type: type,
+        type: type as "pending" | "draft" | "paid",
       })}
     >
       {type}

@@ -10,7 +10,7 @@ interface RegisterRequestBody {
 export async function POST(request: NextRequest) {
   const res = (await request.json()) as RegisterRequestBody
 
-  console.log(res)
+  console.log(res.invoice.itemList)
 
   /*   if (!res.userId)
     return NextResponse.json({ error: "Id not found." }, { status: 401 }) */
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     invoiceDateTo: res.invoice.invoiceDateTo,
     paymentTermsTo: res.invoice.paymentTermsTo,
     projectDescriptionTo: res.invoice.projectDescriptionTo,
+    status: res.invoice.status ?? "pending",
   }
 
   await prisma.user.update({
@@ -53,17 +54,16 @@ export async function POST(request: NextRequest) {
     },
   })
 
-  console.log(res.invoice.itemList)
-
-  /*   await prisma.invoice.update({
-    where: {
-      id: res.invoice.id,
-    },
-    data: {
-      itemList: res.invoice.itemList,
-    },
+  res.invoice.itemList.forEach(async (itemList) => {
+    await prisma.invoiceItemList.createMany({
+      data: {
+        invoiceId: res.invoice.id,
+        name: itemList.name,
+        price: String(itemList.price),
+        quantity: itemList.quantity,
+      },
+    })
   })
- */
 
   return NextResponse.json(
     { error: "New invoice created with success!" },

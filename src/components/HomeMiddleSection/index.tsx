@@ -20,27 +20,37 @@ const HomeMiddleSection = () => {
     data: invoices,
     isLoading,
     isError,
-  } = useQuery<UserInvoice>(
-    "userInvoices",
-    async () => {
+  } = useQuery<UserInvoice>({
+    queryKey: ["getUserInvoices"],
+
+    queryFn: async () => {
       const response = await api.post("/invoices", { id: userInformations.id })
 
       return response.data
     },
 
-    { enabled: !!userInformations.id }
-  )
+    enabled: !!userInformations.id,
+  })
 
   if (isLoading || isError) return
 
   return (
     <PagesContainer>
       <FilterBar />
-
-      <div className="flex flex-col w-[45%] gap-3.5">
+      <div className="flex flex-col w-[75%] gap-3.5 max-w-[55rem] h-[80vh] overflow-y-auto pr-3">
         {invoices?.userInvoices?.map((invoice) => {
           return <Invoice key={invoice.id} userInvoice={invoice} />
         })}
+        <div className="text-center flex gap-5 self-end">
+          <div>
+            <h1 className="text-xl font-bold">Total balance</h1>
+            <p className="text-[1.25rem] font-light">$100.00</p>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">Total pending</h1>
+            <p className="text-[1.25rem] font-light">-$100.00</p>
+          </div>
+        </div>
       </div>
     </PagesContainer>
   )

@@ -21,6 +21,7 @@ interface GlobalContextInterface {
       id: JWTPayload | string
     }>
   >
+  itemListSchema: InvoiceItemList
 }
 
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
@@ -56,6 +57,7 @@ const GlobalStorage = ({ children }: Props) => {
       value={{
         userInformations,
         itemFromListValues,
+        itemListSchema,
         setUserInformations,
         setItemFromListValues,
       }}

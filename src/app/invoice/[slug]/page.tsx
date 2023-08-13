@@ -25,7 +25,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
     data: invoice = {} as InvoiceSchema,
     isLoading,
     isError,
-  } = useQuery<InvoiceSchema>(
+  } = useQuery(
     "singleInvoice",
     async () => {
       const response = await api.post("/invoice", { id: params.slug })
@@ -84,8 +84,8 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
               <div className="flex flex-col">
                 <p className="text-sm">Invoice Date</p>
                 <h2 className="font-bold text-xl">
-                  {formatCreationDate.map((date) => (
-                    <span key={date}>{date} </span>
+                  {formatCreationDate.map((date, idx) => (
+                    <span key={idx}>{date} </span>
                   ))}
                 </h2>
               </div>
@@ -93,8 +93,8 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
                 <p className="text-sm">Payment Due</p>
                 <h2 className="font-bold text-xl">
                   {" "}
-                  {formatDueDate.map((date) => (
-                    <span key={date}>{date} </span>
+                  {formatDueDate.map((date, idx) => (
+                    <span key={idx}>{date} </span>
                   ))}
                 </h2>
               </div>
