@@ -16,7 +16,7 @@ interface AmountTableProps {
 const AmountTable = ({ itemList }: AmountTableProps) => {
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-center bg-strong-blue pt-10 px-2 pb-10 w-full flex-col rounded-t-lg">
+      <div className="flex items-center justify-center bg-strong-blue max-h-[15rem] overflow-y-scroll pt-10 px-2 pb-10 w-full flex-col rounded-t-lg">
         <table className="border-0 border-collapse border-spacing-[3px] w-full">
           <thead className="[&>th]:border-0 [&>th]:p-10">
             <tr className="[&>th]:font-normal">
@@ -30,14 +30,14 @@ const AmountTable = ({ itemList }: AmountTableProps) => {
             {itemList.map((item) => {
               return (
                 <tr
-                  key={item.invoiceId}
+                  key={item.id}
                   className="[&>td]:border-0 [&>td]:text-center [&>td]:w-1/4 [&>td]:font-semibold [&>td]:break-all  [&>td]:pt-5"
                 >
                   <td>{item.name}</td>
                   <td>{Number(item.quantity)}</td>
                   <td>{priceFormatter.format(Number(item.price))}</td>
                   <td>
-                    ${getSingleTotalSum(Number(item.quantity), item.price ?? 0)}
+                    {getSingleTotalSum(Number(item.quantity), item.price ?? 0)}
                   </td>
                 </tr>
               )

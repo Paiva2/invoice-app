@@ -33,11 +33,14 @@ export async function PATCH(req: NextRequest) {
     data: newInvoice,
   })
 
+  await prisma.invoiceItemList.deleteMany({
+    where: {
+      invoiceId: res.invoice.id,
+    },
+  })
+
   res.invoice.itemList.forEach(async (itemList) => {
-    await prisma.invoiceItemList.update({
-      where: {
-        id: itemList.id,
-      },
+    await prisma.invoiceItemList.create({
       data: {
         invoiceId: res.invoice.id,
         name: itemList.name,

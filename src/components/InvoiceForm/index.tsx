@@ -5,13 +5,19 @@ import CustomInput from "../CustomInput"
 import InvoiceItemList from "../InvoiceItemList"
 import DatePicker from "react-datepicker"
 import { GlobalContext } from "@/context/GlobalContext"
+import { usePathname } from "next/navigation"
 
-const InvoiceForm = () => {
-  const { openInvoiceForm, setOpenInvoiceForm } = useContext(GlobalContext)
+interface Props {
+  handleSaveDraft?: () => void
+}
 
-  const [dueDate, setDueDate] = useState<Date | null>(new Date())
+const InvoiceForm = ({ handleSaveDraft }: Props) => {
+  const { openInvoiceForm, setOpenInvoiceForm, dueDate, setDueDate } =
+    useContext(GlobalContext)
 
-  console.log(openInvoiceForm)
+  const currentPage = usePathname()
+
+  const isAllInvoicesPage = currentPage.startsWith("/invoices")
 
   return (
     <Fragment>
@@ -91,22 +97,26 @@ const InvoiceForm = () => {
       <InvoiceItemList />
 
       <div className="flex flex-row justify-between">
-        <button
-          onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
-          type="button"
-          className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
-        >
-          Discard
-        </button>
+        <div>
+          <button
+            onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
+            type="button"
+            className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
+          >
+            Discard
+          </button>
+        </div>
         <div className="self-end">
           <div className="flex gap-2.5">
-            <button
-              type="submit"
-              /* onClick={methods?.handleSubmit(handleSaveDraft)} */
-              className="bg-strong-blue rounded-3xl  transition duration-150 ease-in-out py-1.5 px-6 font-semibold leading-9 hover:bg-dark-blue"
-            >
-              Save as Draft
-            </button>
+            {isAllInvoicesPage && (
+              <button
+                type="submit"
+                onClick={handleSaveDraft}
+                className="bg-strong-blue rounded-3xl  transition duration-150 ease-in-out py-1.5 px-6 font-semibold leading-9 hover:bg-dark-blue"
+              >
+                Save as Draft
+              </button>
+            )}
             <button
               type="submit"
               className="bg-light-purple transition duration-150 ease-in-out rounded-3xl py-1.5 px-5 font-semibold hover:bg-hover-purple leading-9"

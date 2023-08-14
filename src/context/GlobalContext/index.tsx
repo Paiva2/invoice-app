@@ -27,8 +27,8 @@ interface GlobalContextInterface {
   selectedFilters: string[]
   setSelectedFilter: Dispatch<SetStateAction<string[]>>
 
-  invoiceBeingVisualized: InvoiceSchema[]
-  setInvoiceBeingVisualized: Dispatch<SetStateAction<InvoiceSchema[]>>
+  invoiceBeingVisualized: InvoiceSchema
+  setInvoiceBeingVisualized: Dispatch<SetStateAction<InvoiceSchema>>
 
   openInvoiceForm: boolean
   setOpenInvoiceForm: Dispatch<SetStateAction<boolean>>
@@ -57,9 +57,9 @@ const GlobalStorage = ({ children }: Props) => {
   const [openInvoiceForm, setOpenInvoiceForm] = useState(false)
   const [selectedFilters, setSelectedFilter] = useState<string[]>([])
   const [dueDate, setDueDate] = useState<Date>(new Date())
-  const [invoiceBeingVisualized, setInvoiceBeingVisualized] = useState([
-    {},
-  ] as InvoiceSchema[])
+  const [invoiceBeingVisualized, setInvoiceBeingVisualized] = useState(
+    {} as InvoiceSchema
+  )
 
   useEffect(() => {
     const authToken = Cookies.get("invoice-app-auth")

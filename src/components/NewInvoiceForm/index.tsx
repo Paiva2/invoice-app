@@ -122,13 +122,17 @@ const NewInvoiceForm = () => {
     await createNewInvoice.mutateAsync(newInvoice)
   }
 
+  function saveDraftExecution() {
+    methods?.handleSubmit(handleSaveDraft)
+  }
+
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={methods?.handleSubmit(handleSubmitInvoice)}
         className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5 [&>div>label]:flex [&>div>label]:flex-col  [&>div>label>input]:bg-dark-blue [&>div>label>input]:p-3 [&>div>label>input]:rounded"
       >
-        <InvoiceForm />
+        <InvoiceForm handleSaveDraft={saveDraftExecution} />
       </form>
     </FormProvider>
   )

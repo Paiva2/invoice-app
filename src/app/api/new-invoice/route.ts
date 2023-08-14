@@ -10,21 +10,6 @@ interface RegisterRequestBody {
 export async function POST(request: NextRequest) {
   const res = (await request.json()) as RegisterRequestBody
 
-  console.log(res.invoice.itemList)
-
-  /*   if (!res.userId)
-    return NextResponse.json({ error: "Id not found." }, { status: 401 }) */
-
-  /*   const getUserById = await prisma.user.findUnique({
-    where: {
-      id: res.userId,
-    },
-  }) */
-
-  /*   if (!getUserById) {
-    return NextResponse.json({ error: "User not found." }, { status: 401 })
-  } */
-
   const newInvoice = {
     id: res.invoice.id,
     streetFrom: res.invoice.streetFrom,
@@ -54,7 +39,7 @@ export async function POST(request: NextRequest) {
   })
 
   res.invoice.itemList.forEach(async (itemList) => {
-    await prisma.invoiceItemList.createMany({
+    await prisma.invoiceItemList.create({
       data: {
         invoiceId: res.invoice.id,
         name: itemList.name,
