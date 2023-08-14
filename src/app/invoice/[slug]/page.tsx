@@ -6,11 +6,12 @@ import InvoiceInformationTopBar from "@/components/InvoiceInformationTopBar"
 import PagesContainer from "@/components/PagesContainer"
 import ArrowLeft from "@/icons/ArrowLeft"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { InvoiceSchema } from "../../../../types"
 import { useQuery } from "react-query"
 import { api } from "@/lib/api"
 import dayjs from "dayjs"
+import { GlobalContext } from "@/context/GlobalContext"
 
 interface SingleInvoice {
   params: {
@@ -19,7 +20,8 @@ interface SingleInvoice {
 }
 
 const InvoiceInformations = ({ params }: SingleInvoice) => {
-  const [openEditInvoice, setOpenEditInvoice] = useState(false)
+  const { setInvoiceBeingVisualized, setOpenInvoiceForm, openInvoiceForm } =
+    useContext(GlobalContext)
 
   const {
     data: invoice = {} as InvoiceSchema,
@@ -29,6 +31,8 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
     "singleInvoice",
     async () => {
       const response = await api.post("/invoice", { id: params.slug })
+
+      setInvoiceBeingVisualized(response.data.data)
 
       return response.data.data
     },
@@ -55,11 +59,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
           <p>Go back</p>
         </Link>
 
-        <InvoiceInformationTopBar
-          openEditInvoice={openEditInvoice}
-          setOpenEditInvoice={setOpenEditInvoice}
-          type={invoice.status}
-        />
+        <InvoiceInformationTopBar type={invoice.status} />
 
         <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8">
           <div className="flex justify-between">
@@ -121,9 +121,9 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
           <AmountTable itemList={invoice.itemList} />
         </div>
       </div>
-      {openEditInvoice && (
+      {openInvoiceForm && (
         <div
-          onClick={() => setOpenEditInvoice(!openEditInvoice)}
+          onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
           className={`absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
         >
           <div
@@ -132,12 +132,10 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold">
-                Edit <span className="text-hash-blue">#</span>XM9141
+                Edit <span className="text-hash-blue">#</span>
+                {invoice.id}
               </h2>
-              <EditInvoiceForm
-                openEditInvoice={openEditInvoice}
-                setOpenEditInvoice={setOpenEditInvoice}
-              />
+              <EditInvoiceForm />
             </div>
           </div>
         </div>

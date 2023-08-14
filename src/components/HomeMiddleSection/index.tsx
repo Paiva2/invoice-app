@@ -38,14 +38,19 @@ const HomeMiddleSection = () => {
     enabled: !!userInformations.id,
   })
 
-  if (isLoading || isError) return
+  if (isLoading || isError || !invoices) return
 
   const filteredInvoices = invoices?.filter((invoice) => {
     return selectedFilters.includes(invoice.status ?? "")
   })
 
-  const renderFilteredInvoices =
-    selectedFilters.length > 0 ? filteredInvoices : invoices
+  let renderFilteredInvoices = []
+
+  if (selectedFilters.length) {
+    renderFilteredInvoices = filteredInvoices
+  } else {
+    renderFilteredInvoices = invoices
+  }
 
   return (
     <PagesContainer>

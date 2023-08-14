@@ -22,7 +22,8 @@ const filterVisibility = tailwindVariants({
 })
 
 const FilterBar = () => {
-  const { selectedFilters, setSelectedFilter } = useContext(GlobalContext)
+  const { selectedFilters, setSelectedFilter, setOpenInvoiceForm, openInvoiceForm } =
+    useContext(GlobalContext)
 
   const [openNewInvoice, setOpenNewInvoice] = useState(false)
   const [openFilterBar, setOpenFilterBar] = useState(false)
@@ -88,7 +89,7 @@ const FilterBar = () => {
             })}
           </ul>
           <button
-            onClick={() => setOpenNewInvoice(!openNewInvoice)}
+            onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
             type="button"
             className="flex items-baseline gap-3 bg-light-purple py-2 px-3 duration-[.3s] ease-in-out rounded-full hover:bg-hover-purple"
           >
@@ -99,9 +100,9 @@ const FilterBar = () => {
           </button>
         </div>
       </div>
-      {openNewInvoice && (
+      {openInvoiceForm && (
         <div
-          onClick={() => setOpenNewInvoice(!openNewInvoice)}
+          onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
           className="absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]"
         >
           <div
@@ -110,10 +111,7 @@ const FilterBar = () => {
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold">New Invoice</h2>
-              <NewInvoiceForm
-                openNewInvoice={openNewInvoice}
-                setOpenNewInvoice={setOpenNewInvoice}
-              />
+              <NewInvoiceForm />
             </div>
           </div>
         </div>

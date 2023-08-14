@@ -2,28 +2,12 @@ import { prisma } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 import { InvoiceSchema } from "../../../../types"
 
-interface RegisterRequestBody {
+interface RequestInvoiceBody {
   invoice: InvoiceSchema
-  userId: string
 }
 
-export async function POST(request: NextRequest) {
-  const res = (await request.json()) as RegisterRequestBody
-
-  console.log(res.invoice.itemList)
-
-  /*   if (!res.userId)
-    return NextResponse.json({ error: "Id not found." }, { status: 401 }) */
-
-  /*   const getUserById = await prisma.user.findUnique({
-    where: {
-      id: res.userId,
-    },
-  }) */
-
-  /*   if (!getUserById) {
-    return NextResponse.json({ error: "User not found." }, { status: 401 })
-  } */
+export async function PATCH(req: NextRequest) {
+  const res = (await req.json()) as RequestInvoiceBody
 
   const newInvoice = {
     id: res.invoice.id,
@@ -39,22 +23,21 @@ export async function POST(request: NextRequest) {
     countryTo: res.invoice.countryTo,
     invoiceDateTo: res.invoice.invoiceDateTo,
     projectDescriptionTo: res.invoice.projectDescriptionTo,
-    status: res.invoice.status ?? "pending",
+    status: res.invoice.status,
   }
 
-  await prisma.user.update({
+  await prisma.invoice.update({
     where: {
-      id: res.userId,
+      id: res.invoice.id,
     },
-    data: {
-      invoices: {
-        create: newInvoice,
-      },
-    },
+    data: newInvoice,
   })
 
   res.invoice.itemList.forEach(async (itemList) => {
-    await prisma.invoiceItemList.createMany({
+    await prisma.invoiceItemList.update({
+      where: {
+        id: itemList.id,
+      },
       data: {
         invoiceId: res.invoice.id,
         name: itemList.name,
@@ -64,8 +47,13 @@ export async function POST(request: NextRequest) {
     })
   })
 
-  return NextResponse.json(
-    { error: "New invoice created with success!" },
-    { status: 201 }
+  return new NextResponse(
+    JSON.stringify({
+      message: "Edited successfully!",
+    }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    }
   )
 }

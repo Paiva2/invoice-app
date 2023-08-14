@@ -8,7 +8,6 @@ export interface InvoiceSchema {
   countryFrom: string
   countryTo: string
   invoiceDateTo: Date
-  paymentTermsTo: string
   postalCodeFrom: string
   postalCodeTo: string
   projectDescriptionTo: string

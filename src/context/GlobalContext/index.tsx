@@ -3,7 +3,7 @@
 import { Dispatch, SetStateAction, createContext, useEffect, useState } from "react"
 import { JWTPayload, decodeJwt } from "jose"
 import Cookies from "js-cookie"
-import { InvoiceItemList } from "../../../types"
+import { InvoiceItemList, InvoiceSchema } from "../../../types"
 
 interface Props {
   children: React.ReactNode
@@ -18,6 +18,7 @@ interface GlobalContextInterface {
       id: JWTPayload | string
     }>
   >
+
   itemFromListValues: InvoiceItemList[]
   setItemFromListValues: Dispatch<SetStateAction<InvoiceItemList[]>>
 
@@ -25,6 +26,15 @@ interface GlobalContextInterface {
 
   selectedFilters: string[]
   setSelectedFilter: Dispatch<SetStateAction<string[]>>
+
+  invoiceBeingVisualized: InvoiceSchema[]
+  setInvoiceBeingVisualized: Dispatch<SetStateAction<InvoiceSchema[]>>
+
+  openInvoiceForm: boolean
+  setOpenInvoiceForm: Dispatch<SetStateAction<boolean>>
+
+  dueDate: Date
+  setDueDate: Dispatch<SetStateAction<Date>>
 }
 
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
@@ -44,7 +54,12 @@ const GlobalStorage = ({ children }: Props) => {
   })
 
   const [itemFromListValues, setItemFromListValues] = useState([itemListSchema])
+  const [openInvoiceForm, setOpenInvoiceForm] = useState(false)
   const [selectedFilters, setSelectedFilter] = useState<string[]>([])
+  const [dueDate, setDueDate] = useState<Date>(new Date())
+  const [invoiceBeingVisualized, setInvoiceBeingVisualized] = useState([
+    {},
+  ] as InvoiceSchema[])
 
   useEffect(() => {
     const authToken = Cookies.get("invoice-app-auth")
@@ -65,6 +80,12 @@ const GlobalStorage = ({ children }: Props) => {
         itemFromListValues,
         itemListSchema,
         selectedFilters,
+        invoiceBeingVisualized,
+        openInvoiceForm,
+        dueDate,
+        setDueDate,
+        setOpenInvoiceForm,
+        setInvoiceBeingVisualized,
         setSelectedFilter,
         setUserInformations,
         setItemFromListValues,

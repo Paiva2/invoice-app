@@ -1,18 +1,19 @@
+import { GlobalContext } from "@/context/GlobalContext"
 import PlusIcon from "@/icons/PlusIcon"
 import TrashIcon from "@/icons/TrashIcon"
 import { priceFormatter } from "@/utils/priceFormatter"
-import React, { useState } from "react"
+import React, { useContext } from "react"
 import { v4 as uuidv4 } from "uuid"
 
-const ItemList = () => {
+const InvoiceItemList = () => {
   const itemListSchema = {
     id: "1",
     name: "New Item",
-    quantity: 1,
+    quantity: "1",
     price: 0,
   }
 
-  const [itemFromListValues, setItemFromListValues] = useState([itemListSchema])
+  const { itemFromListValues, setItemFromListValues } = useContext(GlobalContext)
 
   function handleAddNewItemToItemList() {
     setItemFromListValues((oldValue) => [
@@ -55,7 +56,8 @@ const ItemList = () => {
 
   function getTotalPrice(itemIndex: number) {
     const getTotal =
-      itemFromListValues[itemIndex].quantity * itemFromListValues[itemIndex].price
+      Number(itemFromListValues[itemIndex].quantity) *
+      itemFromListValues[itemIndex].price
 
     return priceFormatter.format(getTotal)
   }
@@ -137,4 +139,4 @@ const ItemList = () => {
   )
 }
 
-export default ItemList
+export default InvoiceItemList
