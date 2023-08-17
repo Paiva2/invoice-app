@@ -1,9 +1,12 @@
+"use client"
+
 import React, { useContext } from "react"
 import InvoiceTypePin from "../InvoiceTypePin"
 import { GlobalContext } from "@/context/GlobalContext"
 import { InvoiceSchema } from "../../../types"
 import { useMutation, useQueryClient } from "react-query"
 import { api } from "@/lib/api"
+import { useRouter } from "next/navigation"
 
 interface InvoiceInformationProps {
   invoice: InvoiceSchema
@@ -13,12 +16,13 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
   const { openInvoiceForm, setOpenInvoiceForm } = useContext(GlobalContext)
 
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const editInvoice = useMutation({
     mutationFn: (editInvoice: InvoiceSchema) => {
       return api.patch("/edit-invoice", {
         invoice: editInvoice,
-        action: "mark-as-paid"
+        action: "mark-as-paid",
       })
     },
 
@@ -29,8 +33,26 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     },
   })
 
+  const deleteInvoice = useMutation({
+    mutationFn: (invoiceId: string) => {
+      return api.delete("/delete-invoice", { data: { invoiceId: invoiceId } })
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries("getUserInvoices")
+
+      router.push("/invoices")
+
+      setOpenInvoiceForm(false)
+    },
+  })
+
   async function handleMarkAsPaid() {
     editInvoice.mutateAsync(invoice)
+  }
+
+  async function handleDeleteInvoice() {
+    deleteInvoice.mutateAsync(invoice.id)
   }
 
   return (
@@ -51,6 +73,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
             Edit
           </button>
           <button
+            onClick={handleDeleteInvoice}
             className="bg-light-red px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
             type="button"
           >
@@ -65,7 +88,6 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
             >
               Mark as Paid
             </button>
-
           )}
         </div>
       </div>

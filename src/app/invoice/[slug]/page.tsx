@@ -46,9 +46,9 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   const creationDate = new Date(invoice.createdAt)
 
   const formatDueDate = dayjs(dueDate).format("DD/MMM/YYYY").split("/")
-  const formatCreationDate = dayjs(creationDate).format("DD/MMM/YYYY").split("/")
-
-  console.log(invoice)
+  const formatCreationDate = dayjs(creationDate)
+    .format("DD/MMM/YYYY")
+    .split("/")
 
   return (
     <PagesContainer>
