@@ -25,7 +25,6 @@ const FilterBar = () => {
   const { selectedFilters, setSelectedFilter, setOpenInvoiceForm, openInvoiceForm } =
     useContext(GlobalContext)
 
-  const [openNewInvoice, setOpenNewInvoice] = useState(false)
   const [openFilterBar, setOpenFilterBar] = useState(false)
   const filtersTypes = ["Draft", "Pending", "Paid"]
 
@@ -42,7 +41,6 @@ const FilterBar = () => {
       setSelectedFilter(removeFilter)
     }
   }
-
   return (
     <div className="flex flex-col w-[75%] max-w-[55rem]">
       <div className="flex items-baseline justify-between w-full">

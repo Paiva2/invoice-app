@@ -65,6 +65,7 @@ const EditInvoiceForm = () => {
     mutationFn: (editInvoice: InvoiceSchema) => {
       return api.patch("/edit-invoice", {
         invoice: editInvoice,
+        action: "edit-invoice"
       })
     },
 

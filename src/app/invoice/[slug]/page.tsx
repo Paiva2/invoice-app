@@ -48,6 +48,8 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   const formatDueDate = dayjs(dueDate).format("DD/MMM/YYYY").split("/")
   const formatCreationDate = dayjs(creationDate).format("DD/MMM/YYYY").split("/")
 
+  console.log(invoice)
+
   return (
     <PagesContainer>
       <div className="flex flex-col w-[45%] justify-center gap-5">
@@ -59,7 +61,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
           <p>Go back</p>
         </Link>
 
-        <InvoiceInformationTopBar type={invoice.status} />
+        <InvoiceInformationTopBar invoice={invoice} />
 
         <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8">
           <div className="flex justify-between">
