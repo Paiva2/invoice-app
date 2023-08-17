@@ -4,6 +4,8 @@ import TrashIcon from "@/icons/TrashIcon"
 import { priceFormatter } from "@/utils/priceFormatter"
 import React, { useContext } from "react"
 import { v4 as uuidv4 } from "uuid"
+import { NumberFormatBase, NumericFormatProps } from "react-number-format";
+import NumberFormatInput from "../NumberFormatInput"
 
 const InvoiceItemList = () => {
   const itemListSchema = {
@@ -97,13 +99,12 @@ const InvoiceItemList = () => {
 
               <label className="flex-1 [&>input]:border min-h-[5.625rem] [&>input]:border-transparent [&>input]:hover:border-light-purple [&>input]:transition [&>input]:duration-150 [&>input]:ease-in-out [&>input:focus]:outline-0">
                 Price
-                <input
-                  onChange={({ target }) =>
-                    handleEditValueFromInput(idx, "price", target.value)
-                  }
-                  defaultValue={item.price}
+                <NumberFormatInput
                   className="w-full font-semibold"
-                  type="number"
+                  defaultValue={item.price}
+                  onValueChange={(e) => {
+                    handleEditValueFromInput(idx, "price", e.value)
+                  }}
                 />
               </label>
               <label className="flex-1 min-h-[5.625rem]">
