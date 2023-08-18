@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
@@ -8,9 +8,12 @@ import { GlobalContext } from "@/context/GlobalContext"
 import { api } from "@/lib/api"
 import { useQuery } from "react-query"
 import { InvoiceSchema } from "../../../types"
+import { priceFormatter } from "@/utils/priceFormatter"
 interface UserInvoice {
-  status: string
-  userInvoices: Array<InvoiceSchema>
+  userInformations: {
+    userInvoices: Array<InvoiceSchema>
+    informations: string
+  }
 }
 
 const HomeMiddleSection = () => {
@@ -20,7 +23,7 @@ const HomeMiddleSection = () => {
     data: invoices,
     isLoading,
     isError,
-  } = useQuery<Array<InvoiceSchema>>({
+  } = useQuery({
     queryKey: ["getUserInvoices"],
 
     queryFn: async () => {
@@ -28,11 +31,15 @@ const HomeMiddleSection = () => {
         id: userInformations.id,
       })
 
-      const sortInvoicesByDate = response.data?.userInvoices.sort((a, b) => {
-        return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
-      })
+      const sortInvoicesByDate =
+        response.data?.userInformations.userInvoices.sort((a, b) => {
+          return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
+        })
 
-      return sortInvoicesByDate
+      return {
+        invoices: sortInvoicesByDate,
+        userTotalBalance: response.data?.userInformations.informations,
+      }
     },
 
     enabled: !!userInformations.id,
@@ -40,7 +47,7 @@ const HomeMiddleSection = () => {
 
   if (isLoading || isError || !invoices) return
 
-  const filteredInvoices = invoices?.filter((invoice) => {
+  const filteredInvoices = invoices.invoices?.filter((invoice) => {
     return selectedFilters.includes(invoice.status ?? "")
   })
 
@@ -49,8 +56,18 @@ const HomeMiddleSection = () => {
   if (selectedFilters.length) {
     renderFilteredInvoices = filteredInvoices
   } else {
-    renderFilteredInvoices = invoices
+    renderFilteredInvoices = invoices.invoices
   }
+
+  const totalPending = invoices.invoices.reduce((acc, invoice) => {
+    invoice.itemList.forEach((item) => {
+      if (invoice.status === "pending") {
+        return (acc += Number(item.price))
+      }
+    })
+
+    return acc
+  }, 0)
 
   return (
     <PagesContainer>
@@ -62,11 +79,15 @@ const HomeMiddleSection = () => {
         <div className="text-center flex gap-5 self-end">
           <div>
             <h1 className="text-xl font-bold">Total balance</h1>
-            <p className="text-[1.25rem] font-light">$100.00</p>
+            <p className="text-[1.25rem] font-light text-green-500">
+              {priceFormatter.format(Number(invoices?.userTotalBalance))}
+            </p>
           </div>
           <div>
             <h1 className="text-xl font-bold">Total pending</h1>
-            <p className="text-[1.25rem] font-light">-$100.00</p>
+            <p className="text-[1.25rem] font-light text-red-500">
+              {priceFormatter.format(totalPending)}
+            </p>
           </div>
         </div>
       </div>

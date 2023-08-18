@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     },
     select: {
       invoices: { include: { itemList: true } },
+      totalBalance: true,
     },
   })
 
@@ -24,7 +25,10 @@ export async function POST(req: NextRequest) {
   return new NextResponse(
     JSON.stringify({
       status: "success",
-      userInvoices: findUserOnDatabase?.invoices,
+      userInformations: {
+        userInvoices: findUserOnDatabase?.invoices,
+        informations: findUserOnDatabase.totalBalance,
+      },
     }),
     {
       status: 200,

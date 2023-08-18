@@ -1,8 +1,29 @@
+"use client"
+
 import LightIcon from "@/icons/LightIcon"
 import Logo from "@/icons/Logo"
-import React from "react"
+import axios from "axios"
+import React, { FormEvent, useState } from "react"
 
 const SidebarMenu = () => {
+  const [fileToUpload, setFileToUpload] = useState()
+
+  const handleChangeProfile = async (e: FormEvent) => {
+    e.preventDefault()
+
+    const formData = new FormData()
+    formData.append("file", fileToUpload)
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_SECRET_WORD ?? ""
+    )
+
+    const responseUpload = await axios.post(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_ACCOUNT_NAME}/image/upload`,
+      formData
+    )
+  }
+
   return (
     <div className="h-screen flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between z-50">
       <button
@@ -23,6 +44,40 @@ const SidebarMenu = () => {
               src="https://i.postimg.cc/Y9qvvybG/21430510-680977128777457-2422235984997179527-n.jpg"
             />
           </button>
+        </div>
+      </div>
+
+      <div
+        //onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
+        className={`absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-dark-purple w-[40%] h-full overflow-y-auto animate-open-edit"
+        >
+          <div className="w-full p-6 gap-7 flex flex-col">
+            <h2 className="text-3xl font-semibold text-pure-white">
+              Edit <span className="text-hash-blue">Profile</span>
+            </h2>
+            <form
+              className="flex flex-col gap-2.5"
+              onSubmit={handleChangeProfile}
+            >
+              <input
+                className="text-pure-white"
+                onChange={(e) => setFileToUpload(e.target.files[0])}
+                type="file"
+              />
+              <div>
+                <button
+                  className="bg-light-purple text-pure-white p-2.5"
+                  type="submit"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
