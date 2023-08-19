@@ -15,14 +15,20 @@ import { InvoiceSchema } from "../../../types"
 const invoiceSchema = z.object({
   streetFrom: z.string().min(1, { message: "Can't be empty!" }),
   cityFrom: z.string().min(1, { message: "Can't be empty!" }),
-  postalCodeFrom: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeFrom: z
+    .string()
+    .min(1, { message: "Can't be empty!" })
+    .regex(/^[0-9-]+$/, { message: "Invalid postal code!" }),
   countryFrom: z.string().min(1, { message: "Can't be empty!" }),
   clientNameTo: z.string().min(1, { message: "Can't be empty!" }),
   clientEmailTo: z.string().min(1, { message: "Can't be empty!" }).email(),
   streetTo: z.string().min(1, { message: "Can't be empty!" }),
   cityTo: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeTo: z
+    .string()
+    .min(1, { message: "Can't be empty!" })
+    .regex(/^[0-9-]+$/, { message: "Invalid postal code!" }),
   countryTo: z.string().min(1, { message: "Can't be empty!" }),
-  postalCodeTo: z.string().min(1, { message: "Can't be empty!" }),
   projectDescriptionTo: z.string(),
 })
 
@@ -45,14 +51,12 @@ const EditInvoiceForm = () => {
   useEffect(() => {
     if (!invoiceBeingVisualized) return
 
-    Object.keys(invoiceBeingVisualized)?.map((information) => {
+    Object.keys(invoiceBeingVisualized)?.forEach((information) => {
       if (information === "itemList") return
 
       methods.setValue(
-        information,
-        invoiceBeingVisualized[
-          information as keyof typeof invoiceBeingVisualized
-        ]
+        information as keyof InvoiceType,
+        invoiceBeingVisualized[information as keyof InvoiceType]
       )
     })
 
@@ -91,12 +95,11 @@ const EditInvoiceForm = () => {
       clientEmailTo: data.clientEmailTo,
       streetTo: data.streetTo,
       cityTo: data.cityTo,
-      postalCodeTo: data.countryTo,
-      countryTo: data.postalCodeTo,
+      postalCodeTo: data.postalCodeTo,
+      countryTo: data.countryTo,
       projectDescriptionTo: data.projectDescriptionTo,
       invoiceDateTo: dueDate,
       itemList: itemFromListValues,
-      /* status: "draft", */
     }
 
     editInvoice.mutateAsync(editedInvoice)

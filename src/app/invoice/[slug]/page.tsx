@@ -12,6 +12,7 @@ import { useQuery } from "react-query"
 import { api } from "@/lib/api"
 import dayjs from "dayjs"
 import { GlobalContext } from "@/context/GlobalContext"
+import LoadingCircle from "@/components/LoadingCircle"
 
 interface SingleInvoice {
   params: {
@@ -23,6 +24,8 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   const { setInvoiceBeingVisualized, setOpenInvoiceForm, openInvoiceForm } =
     useContext(GlobalContext)
 
+  const [singleInvoiceLoading, setSingleInvoiceLoading] = useState(true)
+
   const {
     data: invoice = {} as InvoiceSchema,
     isLoading,
@@ -30,9 +33,13 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   } = useQuery(
     "singleInvoice",
     async () => {
+      setSingleInvoiceLoading(true)
+
       const response = await api.post("/invoice", { id: params.slug })
 
       setInvoiceBeingVisualized(response.data.data)
+
+      setSingleInvoiceLoading(false)
 
       return response.data.data
     },
@@ -49,6 +56,14 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
   const formatCreationDate = dayjs(creationDate)
     .format("DD/MMM/YYYY")
     .split("/")
+
+  if (singleInvoiceLoading || isLoading) {
+    return (
+      <PagesContainer>
+        <LoadingCircle />
+      </PagesContainer>
+    )
+  }
 
   return (
     <PagesContainer>

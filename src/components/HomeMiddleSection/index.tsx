@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useState } from "react"
+import React, { useContext, useLayoutEffect, useState } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
@@ -9,6 +9,9 @@ import { api } from "@/lib/api"
 import { useQuery } from "react-query"
 import { InvoiceSchema } from "../../../types"
 import { priceFormatter } from "@/utils/priceFormatter"
+import LoadingCircle from "../LoadingCircle"
+import { JWTPayload, decodeJwt } from "jose"
+import Cookies from "js-cookie"
 interface UserInvoice {
   userInformations: {
     userInvoices: Array<InvoiceSchema>
@@ -17,16 +20,16 @@ interface UserInvoice {
 }
 
 const HomeMiddleSection = () => {
-  const { userInformations, selectedFilters } = useContext(GlobalContext)
+  const { userInformations, selectedFilters, setUserInformations } =
+    useContext(GlobalContext)
+  const [loadingInvoices, setLoadingInvoices] = useState(true)
 
-  const {
-    data: invoices,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: invoices, isLoading } = useQuery({
     queryKey: ["getUserHomeInformations"],
 
     queryFn: async () => {
+      setLoadingInvoices(true)
+
       const response = await api.post<UserInvoice>("/invoices", {
         id: userInformations.id,
       })
@@ -36,16 +39,18 @@ const HomeMiddleSection = () => {
           return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
         })
 
+      setLoadingInvoices(false)
+
       return {
         invoices: sortInvoicesByDate,
         userTotalBalance: response.data?.userInformations.informations,
       }
     },
 
-    enabled: !!userInformations.id,
+    enabled: userInformations.authorized,
   })
 
-  if (isLoading || isError || !invoices) return
+  if (!invoices || isLoading) return
 
   const filteredInvoices = invoices.invoices?.filter((invoice) => {
     return selectedFilters.includes(invoice.status ?? "")
@@ -68,6 +73,13 @@ const HomeMiddleSection = () => {
 
     return acc
   }, 0)
+
+  if (loadingInvoices)
+    return (
+      <PagesContainer>
+        <LoadingCircle />
+      </PagesContainer>
+    )
 
   return (
     <PagesContainer>

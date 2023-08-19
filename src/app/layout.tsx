@@ -16,7 +16,14 @@ const leagueSpartan = League_Spartan({
   weight: ["400", "500", "600", "700"],
 })
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retryOnMount: true,
+    },
+  },
+})
 
 export const metadata: Metadata = {
   title: "Invoice App",
@@ -30,15 +37,18 @@ interface RootLayout {
 export default function RootLayout({ children }: RootLayout) {
   return (
     <html lang="en-US">
-      <body suppressHydrationWarning className={`${leagueSpartan.className} flex`}>
-        <SessionProvider>
-          <QueryClientProvider client={queryClient}>
-            <GlobalStorage>
+      <body
+        suppressHydrationWarning
+        className={`${leagueSpartan.className} flex`}
+      >
+        <GlobalStorage>
+          <SessionProvider>
+            <QueryClientProvider client={queryClient}>
               <SidebarMenu />
               <NextAuthProvider>{children}</NextAuthProvider>
-            </GlobalStorage>
-          </QueryClientProvider>
-        </SessionProvider>
+            </QueryClientProvider>
+          </SessionProvider>
+        </GlobalStorage>
       </body>
     </html>
   )

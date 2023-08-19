@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Fragment, useContext, useEffect, useState } from "react"
+import React, { Fragment, useContext, useEffect } from "react"
 import CustomInput from "../CustomInput"
 import InvoiceItemList from "../InvoiceItemList"
 import DatePicker from "react-datepicker"
@@ -38,7 +38,6 @@ const InvoiceForm = () => {
 
         <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded">
           <CustomInput registerName="cityFrom" label="City" inputType="text" />
-
           <CustomInput
             registerName="postalCodeFrom"
             label="Postal Code"

@@ -1,9 +1,16 @@
 "use client"
 
-import { Dispatch, SetStateAction, createContext, useEffect, useState } from "react"
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useLayoutEffect,
+  useState,
+} from "react"
 import { JWTPayload, decodeJwt } from "jose"
 import Cookies from "js-cookie"
 import { InvoiceItemList, InvoiceSchema } from "../../../types"
+import { usePathname } from "next/navigation"
 
 interface Props {
   children: React.ReactNode
@@ -12,10 +19,12 @@ interface Props {
 interface GlobalContextInterface {
   userInformations: {
     id: string | JWTPayload
+    authorized: boolean
   }
   setUserInformations: Dispatch<
     SetStateAction<{
       id: JWTPayload | string
+      authorized: boolean
     }>
   >
 
@@ -49,8 +58,10 @@ const itemListSchema = {
 const GlobalStorage = ({ children }: Props) => {
   const [userInformations, setUserInformations] = useState<{
     id: JWTPayload | string
+    authorized: boolean
   }>({
     id: "",
+    authorized: false,
   })
 
   const [itemFromListValues, setItemFromListValues] = useState([itemListSchema])
@@ -61,17 +72,22 @@ const GlobalStorage = ({ children }: Props) => {
     {} as InvoiceSchema
   )
 
-  useEffect(() => {
-    const authToken = Cookies.get("invoice-app-auth")
+  const currentPage = usePathname()
+  const authToken = Cookies.get("invoice-app-auth")
 
-    if (authToken) {
-      const claimUserId = decodeJwt(authToken)
+  function getUserToken() {
+    if (!authToken) return
 
-      const userId = claimUserId.id as string
+    const claimUserId = decodeJwt(authToken ?? "")
 
-      setUserInformations({ id: userId })
-    }
-  }, [])
+    const userId = claimUserId.id as string
+
+    setUserInformations({ id: userId, authorized: true })
+  }
+
+  useLayoutEffect(() => {
+    getUserToken()
+  }, [currentPage])
 
   return (
     <GlobalContext.Provider

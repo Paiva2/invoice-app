@@ -15,14 +15,20 @@ import { generateRandomID } from "@/utils/randomId"
 const invoiceSchema = z.object({
   streetFrom: z.string().min(1, { message: "Can't be empty!" }),
   cityFrom: z.string().min(1, { message: "Can't be empty!" }),
-  postalCodeFrom: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeFrom: z
+    .string()
+    .min(1, { message: "Can't be empty!" })
+    .regex(/^[0-9-]+$/, { message: "Invalid postal code!" }),
   countryFrom: z.string().min(1, { message: "Can't be empty!" }),
   clientNameTo: z.string().min(1, { message: "Can't be empty!" }),
   clientEmailTo: z.string().min(1, { message: "Can't be empty!" }).email(),
   streetTo: z.string().min(1, { message: "Can't be empty!" }),
   cityTo: z.string().min(1, { message: "Can't be empty!" }),
   countryTo: z.string().min(1, { message: "Can't be empty!" }),
-  postalCodeTo: z.string().min(1, { message: "Can't be empty!" }),
+  postalCodeTo: z
+    .string()
+    .min(1, { message: "Can't be empty!" })
+    .regex(/^[0-9-]+$/, { message: "Invalid postal code!" }),
   projectDescriptionTo: z.string(),
 })
 
@@ -94,8 +100,8 @@ const NewInvoiceForm = () => {
       clientEmailTo: data.clientEmailTo,
       streetTo: data.streetTo,
       cityTo: data.cityTo,
-      postalCodeTo: data.countryTo,
-      countryTo: data.postalCodeTo,
+      postalCodeTo: data.postalCodeTo,
+      countryTo: data.countryTo,
       projectDescriptionTo: data.projectDescriptionTo,
       invoiceDateTo: dueDate,
       itemList: itemFromListValues,
@@ -115,8 +121,8 @@ const NewInvoiceForm = () => {
       clientEmailTo: data.clientEmailTo,
       streetTo: data.streetTo,
       cityTo: data.cityTo,
-      postalCodeTo: data.countryTo,
-      countryTo: data.postalCodeTo,
+      postalCodeTo: data.postalCodeTo,
+      countryTo: data.countryTo,
       projectDescriptionTo: data.projectDescriptionTo,
       invoiceDateTo: dueDate,
       itemList: itemFromListValues,

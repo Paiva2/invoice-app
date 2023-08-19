@@ -14,13 +14,15 @@ import React, {
 } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { UserProfileSchema } from "../../../types"
-import { Image as ImageIcon } from "@phosphor-icons/react"
+import { Image as ImageIcon, SignOut } from "@phosphor-icons/react"
 import { priceFormatter } from "@/utils/priceFormatter"
 import NumberFormatInput from "../NumberFormatInput"
 import LoadingCircle from "../LoadingCircle"
+import Cookies from "js-cookie"
+import { useRouter } from "next/navigation"
 
 const SidebarMenu = () => {
-  const { userInformations } = useContext(GlobalContext)
+  const { userInformations, setUserInformations } = useContext(GlobalContext)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [totalBalance, setTotalBalance] = useState("")
@@ -29,6 +31,8 @@ const SidebarMenu = () => {
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
 
   const [imagePreview, setImagePreview] = useState<File | null>(null)
+
+  const router = useRouter()
 
   const { data: userData, isLoading: loadingProfile } = useQuery({
     queryKey: ["getUserInformations"],
@@ -99,6 +103,16 @@ const SidebarMenu = () => {
     setUsername(userData?.user?.name)
   }, [userData, openProfile])
 
+  function handleLogout() {
+    if (!userInformations.authorized && userInformations.id) return
+
+    Cookies.remove("invoice-app-auth")
+
+    router.push("/login")
+
+    setUserInformations({ id: "", authorized: false })
+  }
+
   const isAllFieldsFilled = Boolean(totalBalance && username)
 
   return (
@@ -111,18 +125,37 @@ const SidebarMenu = () => {
           <Logo />
           <div className="w-full absolute bottom-0 bg-[#cabff7] h-[50%] opacity-[.3] rounded-tl-[20px] rounded-br-[20px] duration-[.3s] ease-in-out group-hover/logo:h-[90%]" />
         </button>
-        <div className="flex flex-col gap-[1.875rem] items-center justify-center ">
+        <div
+          className={`flex ${
+            !userInformations.authorized && "pb-10"
+          } flex-col gap-[1.875rem] items-center justify-center`}
+        >
           <button className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff]">
             <LightIcon />
           </button>
-          <div className="w-full border-t border-[#494e6e] py-[1.5625rem] flex items-center justify-center">
-            <button onClick={() => setOpenProfile(!openProfile)} type="button">
-              <img
-                className="w-[2.5rem] h-[2.5rem] border-[3px] border-transparent rounded-full transition duration-150 ease-in-out cursor-pointer hover:border-light-purple"
-                src={userData?.user.image}
-              />
-            </button>
-          </div>
+          {userInformations.authorized && (
+            <div className="w-full gap-5 flex-col border-t border-[#494e6e] py-[1.5625rem] flex items-center justify-center">
+              <button
+                onClick={() => setOpenProfile(!openProfile)}
+                type="button"
+              >
+                <img
+                  className="w-[2.5rem] h-[2.5rem] border-[3px] border-transparent rounded-full transition duration-150 ease-in-out cursor-pointer hover:border-light-purple"
+                  src={userData?.user.image}
+                />
+              </button>
+              <button
+                onClick={handleLogout}
+                type="button"
+                className="flex gap-2"
+              >
+                <p className="text-light-red hover:underline">Logout</p>
+                <span>
+                  <SignOut size={20} className="text-light-red" weight="bold" />
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
       {openProfile && (
