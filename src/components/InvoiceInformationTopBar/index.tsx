@@ -13,7 +13,8 @@ interface InvoiceInformationProps {
 }
 
 const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
-  const { openInvoiceForm, setOpenInvoiceForm } = useContext(GlobalContext)
+  const { openInvoiceForm, setOpenInvoiceForm, userInformations } =
+    useContext(GlobalContext)
 
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -22,6 +23,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     mutationFn: (editInvoice: InvoiceSchema) => {
       return api.patch("/edit-invoice", {
         invoice: editInvoice,
+        userId: userInformations.id,
         action: "mark-as-paid",
       })
     },

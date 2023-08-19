@@ -78,7 +78,7 @@ const GlobalStorage = ({ children }: Props) => {
   function getUserToken() {
     if (!authToken) return
 
-    const claimUserId = decodeJwt(authToken ?? "")
+    const claimUserId = decodeJwt(authToken)
 
     const userId = claimUserId.id as string
 

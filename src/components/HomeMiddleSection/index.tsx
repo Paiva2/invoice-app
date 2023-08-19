@@ -20,8 +20,7 @@ interface UserInvoice {
 }
 
 const HomeMiddleSection = () => {
-  const { userInformations, selectedFilters, setUserInformations } =
-    useContext(GlobalContext)
+  const { userInformations, selectedFilters } = useContext(GlobalContext)
   const [loadingInvoices, setLoadingInvoices] = useState(true)
 
   const { data: invoices, isLoading } = useQuery({
@@ -91,7 +90,13 @@ const HomeMiddleSection = () => {
         <div className="text-center flex gap-5 self-end">
           <div>
             <h1 className="text-xl font-bold">Total balance</h1>
-            <p className="text-[1.25rem] font-light text-green-500">
+            <p
+              className={`text-[1.25rem] font-light ${
+                +invoices?.userTotalBalance < 0
+                  ? "text-red-500"
+                  : "text-green-500"
+              } `}
+            >
               {priceFormatter.format(Number(invoices?.userTotalBalance))}
             </p>
           </div>
