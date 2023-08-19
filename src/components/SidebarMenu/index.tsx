@@ -5,18 +5,19 @@ import LightIcon from "@/icons/LightIcon"
 import Logo from "@/icons/Logo"
 import { api } from "@/lib/api"
 import axios from "axios"
-import React, { FormEvent, Fragment, useContext, useState } from "react"
+import React, {
+  FormEvent,
+  Fragment,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { UserProfileSchema } from "../../../types"
 import { Image as ImageIcon } from "@phosphor-icons/react"
 import { priceFormatter } from "@/utils/priceFormatter"
 import NumberFormatInput from "../NumberFormatInput"
 import LoadingCircle from "../LoadingCircle"
-
-//ADD VALIDATIONS LATER
-//ADD VALIDATIONS LATER
-//ADD VALIDATIONS LATER
-//ADD VALIDATIONS LATER
 
 const SidebarMenu = () => {
   const { userInformations } = useContext(GlobalContext)
@@ -93,6 +94,13 @@ const SidebarMenu = () => {
     editUserProfile.mutateAsync(newUserData)
   }
 
+  useEffect(() => {
+    setTotalBalance(priceFormatter.format(userData?.user?.totalBalance))
+    setUsername(userData?.user?.name)
+  }, [userData, openProfile])
+
+  const isAllFieldsFilled = Boolean(totalBalance && username)
+
   return (
     <Fragment>
       <div className="h-screen z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between">
@@ -111,7 +119,7 @@ const SidebarMenu = () => {
             <button onClick={() => setOpenProfile(!openProfile)} type="button">
               <img
                 className="w-[2.5rem] h-[2.5rem] border-[3px] border-transparent rounded-full transition duration-150 ease-in-out cursor-pointer hover:border-light-purple"
-                src={userData.user.image}
+                src={userData?.user.image}
               />
             </button>
           </div>
@@ -132,7 +140,7 @@ const SidebarMenu = () => {
               <div className="w-full p-6 gap-7 flex flex-col">
                 <h2 className="text-3xl font-semibold text-pure-white">
                   Edit{" "}
-                  <span className="text-hash-blue">{userData.user.name}</span>{" "}
+                  <span className="text-hash-blue">{userData?.user.name}</span>{" "}
                   Profile
                 </h2>
                 <form
@@ -148,7 +156,7 @@ const SidebarMenu = () => {
                       src={
                         imagePreview
                           ? URL.createObjectURL(imagePreview)
-                          : userData.user.image
+                          : userData?.user.image
                       }
                     />
                     <input
@@ -168,7 +176,7 @@ const SidebarMenu = () => {
                     E-mail
                     <input
                       disabled
-                      defaultValue={userData.user.email}
+                      defaultValue={userData?.user.email}
                       type="text"
                       className="customInput"
                     />
@@ -178,7 +186,7 @@ const SidebarMenu = () => {
                     Username
                     <input
                       onChange={(e) => setUsername(e.target.value)}
-                      defaultValue={userData.user.name}
+                      defaultValue={userData?.user.name}
                       type="text"
                       className="customInput"
                     />
@@ -191,15 +199,15 @@ const SidebarMenu = () => {
                         setTotalBalance(e.formattedValue)
                       }}
                       defaultValue={priceFormatter.format(
-                        userData.user.totalBalance
+                        userData?.user.totalBalance
                       )}
                       className="customInput text-strong-emerald"
                     />
                   </label>
                   <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
                     <button
-                      disabled={editUserProfile.isLoading}
-                      className="bg-light-purple text-lg min-h-[48px] w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple"
+                      disabled={editUserProfile.isLoading || !isAllFieldsFilled}
+                      className="bg-light-purple text-lg min-h-[48px] w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple disabled:bg-dark-blue"
                       type="submit"
                     >
                       {!editUserProfile.isLoading ? (

@@ -13,6 +13,12 @@ interface RequestEditProfileBody {
 export async function PATCH(req: NextRequest) {
   const res = (await req.json()) as RequestEditProfileBody
 
+  if (!res.data)
+    return NextResponse.json(
+      { error: "Invalid informations." },
+      { status: 404 }
+    )
+
   const getUserWithId = await prisma.user.update({
     where: {
       id: res.data.id,
@@ -32,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   }
   return new NextResponse(
     JSON.stringify({
-      status: "Profile image edited successfully!",
+      status: "Profile edited successfully!",
     }),
     {
       status: 200,
