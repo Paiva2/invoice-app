@@ -9,11 +9,20 @@ import React, { FormEvent, useContext, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { UserProfileSchema } from "../../../types"
 import { Image as ImageIcon } from "@phosphor-icons/react"
+import { priceFormatter } from "@/utils/priceFormatter"
+import NumberFormatInput from "../NumberFormatInput"
+
+//ADD VALIDATIONS LATER
+//ADD VALIDATIONS LATER
+//ADD VALIDATIONS LATER
+//ADD VALIDATIONS LATER
 
 const SidebarMenu = () => {
   const { userInformations } = useContext(GlobalContext)
 
   const [openProfile, setOpenProfile] = useState(false)
+  const [totalBalance, setTotalBalance] = useState("")
+  const [username, setUsername] = useState("")
 
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
 
@@ -36,13 +45,9 @@ const SidebarMenu = () => {
   const queryClient = useQueryClient()
 
   const editUserProfile = useMutation({
-    mutationFn: async (actionAndData: {
-      data: UserProfileSchema
-      action: string
-    }) => {
+    mutationFn: async (data: UserProfileSchema) => {
       const response = await api.patch("/edit-profile", {
-        data: actionAndData.data,
-        action: actionAndData.action,
+        data,
       })
 
       return response
@@ -51,6 +56,8 @@ const SidebarMenu = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("getUserInformations")
 
+      queryClient.invalidateQueries("getUserHomeInformations")
+
       setImagePreview(null)
     },
   })
@@ -58,28 +65,36 @@ const SidebarMenu = () => {
   const handleChangeProfile = async (e: FormEvent) => {
     e.preventDefault()
 
-    const formData = new FormData()
-    formData.append("file", fileToUpload ?? "")
+    let responseUpload = null
 
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_SECRET_WORD ?? ""
-    )
+    if (fileToUpload && imagePreview) {
+      const formData = new FormData()
+      formData.append("file", fileToUpload ?? "")
 
-    const responseUpload = await axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_ACCOUNT_NAME}/image/upload`,
-      formData
-    )
+      formData.append(
+        "upload_preset",
+        process.env.NEXT_PUBLIC_CLOUDINARY_SECRET_WORD ?? ""
+      )
+
+      responseUpload = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_ACCOUNT_NAME}/image/upload`,
+        formData
+      )
+    }
 
     const newUserData = {
       id: userInformations.id,
-      image: responseUpload.data.url,
+      image: responseUpload?.data.url || userData.user.image,
+      totalBalance: totalBalance || userData.user.totalBalance,
+      username: username || userData.user.username,
     }
 
-    editUserProfile.mutateAsync({ action: "edit-image", data: newUserData })
+    console.log(newUserData)
+
+    editUserProfile.mutateAsync(newUserData)
   }
 
-  if (!userData || editUserProfile.isLoading) return <></>
+  if (!userData) return <></>
 
   return (
     <>
@@ -108,11 +123,11 @@ const SidebarMenu = () => {
       {openProfile && (
         <div
           onClick={() => setOpenProfile(!openProfile)}
-          className={`absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
+          className={`absolute z-20 w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] h-full overflow-y-auto animate-open-edit"
+            className="bg-dark-purple w-[40%] h-full relative overflow-y-auto animate-open-edit"
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold text-pure-white">
@@ -121,10 +136,10 @@ const SidebarMenu = () => {
                 Profile
               </h2>
               <form
-                className="flex flex-col gap-5 items-center justify-center"
+                className="flex flex-col gap-5 justify-center"
                 onSubmit={handleChangeProfile}
               >
-                <label className="w-[12.5rem] h-[12.5rem] rounded-full overflow-hidden cursor-pointer relative">
+                <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative">
                   <div className="absolute flex items-center justify-center bg-[rgba(0,0,0,0.3)] transition-all delay-75 ease-in-out right-0 left-0 w-full h-[12.5rem] hover:bg-[rgba(0,0,0,0.6)]">
                     <ImageIcon size={60} color="#c4c4c4" weight="regular" />
                   </div>
@@ -148,12 +163,52 @@ const SidebarMenu = () => {
                     type="file"
                   />
                 </label>
-                <div>
+
+                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  E-mail
+                  <input
+                    disabled
+                    defaultValue={userData.user.email}
+                    type="text"
+                    className="customInput"
+                  />
+                </label>
+
+                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  Username
+                  <input
+                    onChange={(e) => setUsername(e.target.value)}
+                    defaultValue={userData.user.name}
+                    type="text"
+                    className="customInput"
+                  />
+                </label>
+
+                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  Manage your total balance
+                  <NumberFormatInput
+                    onValueChange={(e) => {
+                      setTotalBalance(e.formattedValue)
+                    }}
+                    defaultValue={priceFormatter.format(
+                      userData.user.totalBalance
+                    )}
+                    className="customInput text-strong-emerald"
+                  />
+                </label>
+                <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
                   <button
-                    className="bg-light-purple text-pure-white transition-all delay-75 ease-in-out py-2 px-10 font-semibold hover:bg-hover-purple"
+                    className="bg-light-purple text-lg w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple"
                     type="submit"
                   >
                     Save changes
+                  </button>
+                  <button
+                    onClick={() => setOpenProfile(!openProfile)}
+                    className="bg-dark-blue text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue w-[95%]"
+                    type="button"
+                  >
+                    Discard changes
                   </button>
                 </div>
               </form>

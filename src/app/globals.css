@@ -7,6 +7,10 @@ body {
   background-color: #141625;
 }
 
+.customInput {
+  @apply border border-transparent hover:border-light-purple transition duration-150 ease-in-out focus:outline-0;
+}
+
 .react-datepicker {
   @apply border-0 bg-dark-blue !important;
 }

@@ -71,7 +71,7 @@ const NewInvoiceForm = () => {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries("getUserInvoices")
+      queryClient.invalidateQueries("getUserHomeInformations")
 
       methods.reset()
 

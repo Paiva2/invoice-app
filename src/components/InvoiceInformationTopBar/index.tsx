@@ -39,7 +39,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries("getUserInvoices")
+      queryClient.invalidateQueries("getUserHomeInformations")
 
       router.push("/invoices")
 

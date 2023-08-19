@@ -24,7 +24,7 @@ const HomeMiddleSection = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["getUserInvoices"],
+    queryKey: ["getUserHomeInformations"],
 
     queryFn: async () => {
       const response = await api.post<UserInvoice>("/invoices", {
