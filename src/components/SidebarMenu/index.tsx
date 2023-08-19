@@ -5,12 +5,13 @@ import LightIcon from "@/icons/LightIcon"
 import Logo from "@/icons/Logo"
 import { api } from "@/lib/api"
 import axios from "axios"
-import React, { FormEvent, useContext, useState } from "react"
+import React, { FormEvent, Fragment, useContext, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { UserProfileSchema } from "../../../types"
 import { Image as ImageIcon } from "@phosphor-icons/react"
 import { priceFormatter } from "@/utils/priceFormatter"
 import NumberFormatInput from "../NumberFormatInput"
+import LoadingCircle from "../LoadingCircle"
 
 //ADD VALIDATIONS LATER
 //ADD VALIDATIONS LATER
@@ -28,7 +29,7 @@ const SidebarMenu = () => {
 
   const [imagePreview, setImagePreview] = useState<File | null>(null)
 
-  const { data: userData } = useQuery({
+  const { data: userData, isLoading: loadingProfile } = useQuery({
     queryKey: ["getUserInformations"],
 
     queryFn: async () => {
@@ -53,8 +54,8 @@ const SidebarMenu = () => {
       return response
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries("getUserInformations")
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("getUserInformations")
 
       queryClient.invalidateQueries("getUserHomeInformations")
 
@@ -89,15 +90,11 @@ const SidebarMenu = () => {
       username: username || userData.user.username,
     }
 
-    console.log(newUserData)
-
     editUserProfile.mutateAsync(newUserData)
   }
 
-  if (!userData) return <></>
-
   return (
-    <>
+    <Fragment>
       <div className="h-screen z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between">
         <button
           type="button"
@@ -129,94 +126,104 @@ const SidebarMenu = () => {
             onClick={(e) => e.stopPropagation()}
             className="bg-dark-purple w-[40%] h-full relative overflow-y-auto animate-open-edit"
           >
-            <div className="w-full p-6 gap-7 flex flex-col">
-              <h2 className="text-3xl font-semibold text-pure-white">
-                Edit{" "}
-                <span className="text-hash-blue">{userData.user.name}</span>{" "}
-                Profile
-              </h2>
-              <form
-                className="flex flex-col gap-5 justify-center"
-                onSubmit={handleChangeProfile}
-              >
-                <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative">
-                  <div className="absolute flex items-center justify-center bg-[rgba(0,0,0,0.3)] transition-all delay-75 ease-in-out right-0 left-0 w-full h-[12.5rem] hover:bg-[rgba(0,0,0,0.6)]">
-                    <ImageIcon size={60} color="#c4c4c4" weight="regular" />
+            {loadingProfile && <LoadingCircle />}
+
+            {!loadingProfile && (
+              <div className="w-full p-6 gap-7 flex flex-col">
+                <h2 className="text-3xl font-semibold text-pure-white">
+                  Edit{" "}
+                  <span className="text-hash-blue">{userData.user.name}</span>{" "}
+                  Profile
+                </h2>
+                <form
+                  className="flex flex-col gap-5 justify-center"
+                  onSubmit={handleChangeProfile}
+                >
+                  <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative">
+                    <div className="absolute flex items-center justify-center bg-[rgba(0,0,0,0.3)] transition-all delay-75 ease-in-out right-0 left-0 w-full h-[12.5rem] hover:bg-[rgba(0,0,0,0.6)]">
+                      <ImageIcon size={60} color="#c4c4c4" weight="regular" />
+                    </div>
+                    <img
+                      className="w-full h-full object-cover"
+                      src={
+                        imagePreview
+                          ? URL.createObjectURL(imagePreview)
+                          : userData.user.image
+                      }
+                    />
+                    <input
+                      className="hidden"
+                      onChange={(e) => {
+                        if (!e.target.files) return
+
+                        setFileToUpload(e.target.files[0])
+
+                        setImagePreview(e.target.files[0])
+                      }}
+                      type="file"
+                    />
+                  </label>
+
+                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                    E-mail
+                    <input
+                      disabled
+                      defaultValue={userData.user.email}
+                      type="text"
+                      className="customInput"
+                    />
+                  </label>
+
+                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                    Username
+                    <input
+                      onChange={(e) => setUsername(e.target.value)}
+                      defaultValue={userData.user.name}
+                      type="text"
+                      className="customInput"
+                    />
+                  </label>
+
+                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                    Manage your total balance
+                    <NumberFormatInput
+                      onValueChange={(e) => {
+                        setTotalBalance(e.formattedValue)
+                      }}
+                      defaultValue={priceFormatter.format(
+                        userData.user.totalBalance
+                      )}
+                      className="customInput text-strong-emerald"
+                    />
+                  </label>
+                  <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
+                    <button
+                      disabled={editUserProfile.isLoading}
+                      className="bg-light-purple text-lg min-h-[48px] w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple"
+                      type="submit"
+                    >
+                      {!editUserProfile.isLoading ? (
+                        "Save changes"
+                      ) : (
+                        <LoadingCircle loadingType="buttonLoading" />
+                      )}
+                    </button>
+                    <button
+                      disabled={editUserProfile.isLoading}
+                      onClick={() => setOpenProfile(!openProfile)}
+                      className="bg-dark-blue text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue w-[95%]"
+                      type="button"
+                    >
+                      Discard changes
+                    </button>
                   </div>
-                  <img
-                    className="w-full h-full object-cover"
-                    src={
-                      imagePreview
-                        ? URL.createObjectURL(imagePreview)
-                        : userData.user.image
-                    }
-                  />
-                  <input
-                    className="hidden"
-                    onChange={(e) => {
-                      if (!e.target.files) return
-
-                      setFileToUpload(e.target.files[0])
-
-                      setImagePreview(e.target.files[0])
-                    }}
-                    type="file"
-                  />
-                </label>
-
-                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
-                  E-mail
-                  <input
-                    disabled
-                    defaultValue={userData.user.email}
-                    type="text"
-                    className="customInput"
-                  />
-                </label>
-
-                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
-                  Username
-                  <input
-                    onChange={(e) => setUsername(e.target.value)}
-                    defaultValue={userData.user.name}
-                    type="text"
-                    className="customInput"
-                  />
-                </label>
-
-                <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
-                  Manage your total balance
-                  <NumberFormatInput
-                    onValueChange={(e) => {
-                      setTotalBalance(e.formattedValue)
-                    }}
-                    defaultValue={priceFormatter.format(
-                      userData.user.totalBalance
-                    )}
-                    className="customInput text-strong-emerald"
-                  />
-                </label>
-                <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
-                  <button
-                    className="bg-light-purple text-lg w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple"
-                    type="submit"
-                  >
-                    Save changes
-                  </button>
-                  <button
-                    onClick={() => setOpenProfile(!openProfile)}
-                    className="bg-dark-blue text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue w-[95%]"
-                    type="button"
-                  >
-                    Discard changes
-                  </button>
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       )}
-    </>
+    </Fragment>
   )
 }
 

@@ -32,9 +32,14 @@ module.exports = {
           "0%": { transform: "translateX(-120%)" },
           "100%": { transform: "translateX(0%)" },
         },
+        spinAnimation: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "open-edit": "openMenuAnimation .3s linear forwards",
+        "loading-circle": "spinAnimation 1s linear infinite",
       },
     },
   },

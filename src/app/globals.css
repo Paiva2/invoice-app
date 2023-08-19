@@ -11,6 +11,12 @@ body {
   @apply border border-transparent hover:border-light-purple transition duration-150 ease-in-out focus:outline-0;
 }
 
+.loader {
+  margin: 0 auto;
+  border: 5px solid #7c5dfa;
+  border-top: 5px solid #1e2139;
+}
+
 .react-datepicker {
   @apply border-0 bg-dark-blue !important;
 }
