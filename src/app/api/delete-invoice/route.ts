@@ -8,6 +8,12 @@ interface RequestInvoiceBody {
 export async function DELETE(req: NextRequest) {
   const res = (await req.json()) as RequestInvoiceBody
 
+  await prisma.invoiceItemList.deleteMany({
+    where: {
+      invoiceId: res.invoiceId,
+    },
+  })
+
   await prisma.invoice.delete({
     where: {
       id: res.invoiceId,
