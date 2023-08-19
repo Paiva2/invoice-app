@@ -1,18 +1,59 @@
 "use client"
 
+import { GlobalContext } from "@/context/GlobalContext"
 import LightIcon from "@/icons/LightIcon"
 import Logo from "@/icons/Logo"
+import { api } from "@/lib/api"
 import axios from "axios"
-import React, { FormEvent, useState } from "react"
+import React, { FormEvent, useContext, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+import { UserProfileSchema } from "../../../types"
 
 const SidebarMenu = () => {
-  const [fileToUpload, setFileToUpload] = useState()
+  const [fileToUpload, setFileToUpload] = useState<File | null>(null)
+
+  const { userInformations } = useContext(GlobalContext)
+
+  const { data: userData } = useQuery({
+    queryKey: ["getUserInformations"],
+
+    queryFn: async () => {
+      const response = await api.post("/user-informations", {
+        id: userInformations.id,
+      })
+
+      return response.data
+    },
+
+    enabled: !!userInformations.id,
+  })
+
+  const queryClient = useQueryClient()
+
+  const editUserProfile = useMutation({
+    mutationFn: async (actionAndData: {
+      data: UserProfileSchema
+      action: string
+    }) => {
+      const response = await api.patch("/edit-profile", {
+        data: actionAndData.data,
+        action: actionAndData.action,
+      })
+
+      return response
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries("getUserInformations")
+    },
+  })
 
   const handleChangeProfile = async (e: FormEvent) => {
     e.preventDefault()
 
     const formData = new FormData()
-    formData.append("file", fileToUpload)
+    formData.append("file", fileToUpload ?? "")
+
     formData.append(
       "upload_preset",
       process.env.NEXT_PUBLIC_CLOUDINARY_SECRET_WORD ?? ""
@@ -22,6 +63,13 @@ const SidebarMenu = () => {
       `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_ACCOUNT_NAME}/image/upload`,
       formData
     )
+
+    const newUserData = {
+      id: userInformations.id,
+      image: responseUpload.data.url,
+    }
+
+    editUserProfile.mutateAsync({ action: "edit-image", data: newUserData })
   }
 
   return (
@@ -41,7 +89,7 @@ const SidebarMenu = () => {
           <button type="button">
             <img
               className="w-[2.5rem] h-[2.5rem] border-[3px] border-transparent rounded-full transition duration-150 ease-in-out cursor-pointer hover:border-light-purple"
-              src="https://i.postimg.cc/Y9qvvybG/21430510-680977128777457-2422235984997179527-n.jpg"
+              src={userData.user.image}
             />
           </button>
         </div>
@@ -57,7 +105,8 @@ const SidebarMenu = () => {
         >
           <div className="w-full p-6 gap-7 flex flex-col">
             <h2 className="text-3xl font-semibold text-pure-white">
-              Edit <span className="text-hash-blue">Profile</span>
+              Edit <span className="text-hash-blue">{userData.user.name}</span>{" "}
+              Profile
             </h2>
             <form
               className="flex flex-col gap-2.5"
@@ -65,7 +114,9 @@ const SidebarMenu = () => {
             >
               <input
                 className="text-pure-white"
-                onChange={(e) => setFileToUpload(e.target.files[0])}
+                onChange={(e) =>
+                  setFileToUpload(e.target.files && e.target.files[0])
+                }
                 type="file"
               />
               <div>

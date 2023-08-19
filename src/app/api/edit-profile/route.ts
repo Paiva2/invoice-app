@@ -1,36 +1,51 @@
-/* import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 
-require("dotenv").config()
-
-const cloudinary = require("cloudinary").v2
-
-interface RequestInvoiceBody {
-  file: any //fix
+interface RequestEditProfileBody {
+  action: string
+  data: {
+    id: string
+    image: string
+    totalBalance: string
+  }
 }
 
 export async function PATCH(req: NextRequest) {
-  const res = (await req.json()) as RequestInvoiceBody
+  const res = (await req.json()) as RequestEditProfileBody
 
-  cloudinary.uploader
-    .upload(res.file, {
-      resource_type: "image",
-    })
-    .then((result) => {
-      console.log("sucess", JSON.stringify(result))
+  switch (res.action) {
+    case "edit-image":
+      const getUserWithId = await prisma.user.update({
+        where: {
+          id: res.data.id,
+        },
+        data: {
+          image: res.data.image,
+        },
+      })
 
+      if (!getUserWithId) {
+        return NextResponse.json({ error: "User not found." }, { status: 404 })
+      }
       return new NextResponse(
         JSON.stringify({
-          message: "Profile edited successfully!",
+          status: "Profile image edited successfully!",
         }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
         }
       )
-    })
-    .catch((err) => {
-      console.log(err, JSON.stringify(err))
-    })
+
+    default:
+      new NextResponse(
+        JSON.stringify({
+          status: "Undefined action!",
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+  }
 }
- */

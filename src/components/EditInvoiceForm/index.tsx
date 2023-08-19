@@ -50,7 +50,9 @@ const EditInvoiceForm = () => {
 
       methods.setValue(
         information,
-        invoiceBeingVisualized[information as keyof typeof invoiceBeingVisualized]
+        invoiceBeingVisualized[
+          information as keyof typeof invoiceBeingVisualized
+        ]
       )
     })
 
@@ -62,11 +64,13 @@ const EditInvoiceForm = () => {
   const queryClient = useQueryClient()
 
   const editInvoice = useMutation({
-    mutationFn: (editInvoice: InvoiceSchema) => {
-      return api.patch("/edit-invoice", {
+    mutationFn: async (editInvoice: InvoiceSchema) => {
+      const response = api.patch("/edit-invoice", {
         invoice: editInvoice,
-        action: "edit-invoice"
+        action: "edit-invoice",
       })
+
+      return response
     },
 
     onSuccess: () => {

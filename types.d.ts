@@ -1,3 +1,5 @@
+import { JWTPayload } from "jose"
+
 export interface InvoiceSchema {
   id: string
   createdAt?: Date
@@ -23,4 +25,12 @@ export interface InvoiceItemList {
   quantity: string
   price: number
   invoiceId?: string
+}
+
+export interface UserProfileSchema {
+  id: string | JWTPayload
+  email?: string
+  image: string
+  name?: string
+  totalBalance?: string
 }
