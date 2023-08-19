@@ -5,7 +5,6 @@ import PlusSymbol from "@/icons/PlusSymbol"
 import React, { MouseEvent, useContext, useState } from "react"
 import NewInvoiceForm from "../NewInvoiceForm"
 import { tv as tailwindVariants } from "tailwind-variants"
-import { arrowRotation } from "@/utils/tailwindVariants"
 import { GlobalContext } from "@/context/GlobalContext"
 
 const filterVisibility = tailwindVariants({
@@ -21,9 +20,26 @@ const filterVisibility = tailwindVariants({
   },
 })
 
+export const arrowRotation = tailwindVariants({
+  base: "transition delay-70 ease-in-out",
+  variants: {
+    arrowRotate: {
+      rotate: "rotate-180",
+      normal: "rotate-0",
+    },
+  },
+  defaultVariants: {
+    arrowRotate: "normal",
+  },
+})
+
 const FilterBar = () => {
-  const { selectedFilters, setSelectedFilter, setOpenInvoiceForm, openInvoiceForm } =
-    useContext(GlobalContext)
+  const {
+    selectedFilters,
+    setSelectedFilter,
+    setOpenInvoiceForm,
+    openInvoiceForm,
+  } = useContext(GlobalContext)
 
   const [openFilterBar, setOpenFilterBar] = useState(false)
   const filtersTypes = ["Draft", "Pending", "Paid"]

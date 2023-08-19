@@ -13,7 +13,7 @@ interface RequestEditProfileBody {
 export async function PATCH(req: NextRequest) {
   const res = (await req.json()) as RequestEditProfileBody
 
-  if (!res.data)
+  if (!res.data || res.data.image || res.data.totalBalance || res.data.username)
     return NextResponse.json(
       { error: "Invalid informations." },
       { status: 404 }

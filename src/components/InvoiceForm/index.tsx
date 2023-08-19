@@ -1,23 +1,29 @@
 "use client"
 
-import React, { Fragment, useContext, useState } from "react"
+import React, { Fragment, useContext, useEffect, useState } from "react"
 import CustomInput from "../CustomInput"
 import InvoiceItemList from "../InvoiceItemList"
 import DatePicker from "react-datepicker"
 import { GlobalContext } from "@/context/GlobalContext"
 import { usePathname } from "next/navigation"
 
-interface Props {
-  handleSaveDraft?: () => void
-}
-
-const InvoiceForm = ({ handleSaveDraft }: Props) => {
-  const { openInvoiceForm, setOpenInvoiceForm, dueDate, setDueDate } =
-    useContext(GlobalContext)
+const InvoiceForm = () => {
+  const {
+    openInvoiceForm,
+    dueDate,
+    itemListSchema,
+    setOpenInvoiceForm,
+    setDueDate,
+    setItemFromListValues,
+  } = useContext(GlobalContext)
 
   const currentPage = usePathname()
 
   const isAllInvoicesPage = currentPage.startsWith("/invoices")
+
+  useEffect(() => {
+    setItemFromListValues([itemListSchema])
+  }, [openInvoiceForm])
 
   return (
     <Fragment>
@@ -39,7 +45,11 @@ const InvoiceForm = ({ handleSaveDraft }: Props) => {
             inputType="text"
           />
 
-          <CustomInput registerName="countryFrom" label="Country" inputType="text" />
+          <CustomInput
+            registerName="countryFrom"
+            label="Country"
+            inputType="text"
+          />
         </div>
       </div>
 
@@ -73,7 +83,11 @@ const InvoiceForm = ({ handleSaveDraft }: Props) => {
             inputType="text"
           />
 
-          <CustomInput registerName="countryTo" label="Country" inputType="text" />
+          <CustomInput
+            registerName="countryTo"
+            label="Country"
+            inputType="text"
+          />
         </div>
 
         <div className="w-full flex-col flex">
@@ -96,36 +110,29 @@ const InvoiceForm = ({ handleSaveDraft }: Props) => {
 
       <InvoiceItemList />
 
-      <div className="flex flex-row justify-between">
-        <div>
-          <button
-            onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
-            type="button"
-            className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
-          >
-            Discard
-          </button>
-        </div>
-        <div className="self-end">
-          <div className="flex gap-2.5">
-            {isAllInvoicesPage && (
-              <button
-                type="submit"
-                onClick={handleSaveDraft}
-                className="bg-strong-blue rounded-3xl  transition duration-150 ease-in-out py-1.5 px-6 font-semibold leading-9 hover:bg-dark-blue"
-              >
-                Save as Draft
-              </button>
-            )}
+      {!isAllInvoicesPage && (
+        <div className="flex flex-row justify-between">
+          <div>
             <button
-              type="submit"
-              className="bg-light-purple transition duration-150 ease-in-out rounded-3xl py-1.5 px-5 font-semibold hover:bg-hover-purple leading-9"
+              onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
+              type="button"
+              className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
             >
-              Save & Send
+              Discard
             </button>
           </div>
+          <div className="self-end">
+            <div className="flex gap-2.5">
+              <button
+                type="submit"
+                className="bg-light-purple transition duration-150 ease-in-out rounded-3xl py-1.5 px-5 font-semibold hover:bg-hover-purple leading-9"
+              >
+                Save & Send
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </Fragment>
   )
 }

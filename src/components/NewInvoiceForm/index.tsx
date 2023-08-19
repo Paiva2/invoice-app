@@ -51,7 +51,9 @@ const NewInvoiceForm = () => {
     userInformations,
     itemListSchema,
     dueDate,
+    openInvoiceForm,
     setItemFromListValues,
+    setOpenInvoiceForm,
   } = useContext(GlobalContext)
 
   if (!userInformations.id) return
@@ -76,6 +78,8 @@ const NewInvoiceForm = () => {
       methods.reset()
 
       setItemFromListValues([itemListSchema])
+
+      setOpenInvoiceForm(false)
     },
   })
 
@@ -122,17 +126,43 @@ const NewInvoiceForm = () => {
     await createNewInvoice.mutateAsync(newInvoice)
   }
 
-  function saveDraftExecution() {
-    methods?.handleSubmit(handleSaveDraft)
-  }
-
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={methods?.handleSubmit(handleSubmitInvoice)}
         className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5 [&>div>label]:flex [&>div>label]:flex-col  [&>div>label>input]:bg-dark-blue [&>div>label>input]:p-3 [&>div>label>input]:rounded"
       >
-        <InvoiceForm handleSaveDraft={saveDraftExecution} />
+        <InvoiceForm />
+
+        <div className="flex flex-row justify-between">
+          <div>
+            <button
+              onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
+              type="button"
+              className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
+            >
+              Discard
+            </button>
+          </div>
+          <div className="self-end">
+            <div className="flex gap-2.5">
+              <button
+                type="submit"
+                onClick={methods?.handleSubmit(handleSaveDraft)}
+                className="bg-strong-blue rounded-3xl  transition duration-150 ease-in-out py-1.5 px-6 font-semibold leading-9 hover:bg-dark-blue"
+              >
+                Save as Draft
+              </button>
+
+              <button
+                type="submit"
+                className="bg-light-purple transition duration-150 ease-in-out rounded-3xl py-1.5 px-5 font-semibold hover:bg-hover-purple leading-9"
+              >
+                Save & Send
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
     </FormProvider>
   )

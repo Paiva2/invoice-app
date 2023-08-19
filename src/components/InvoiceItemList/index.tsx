@@ -4,7 +4,6 @@ import TrashIcon from "@/icons/TrashIcon"
 import { priceFormatter } from "@/utils/priceFormatter"
 import React, { useContext } from "react"
 import { v4 as uuidv4 } from "uuid"
-import { NumberFormatBase, NumericFormatProps } from "react-number-format";
 import NumberFormatInput from "../NumberFormatInput"
 
 const InvoiceItemList = () => {
@@ -15,7 +14,8 @@ const InvoiceItemList = () => {
     price: 0,
   }
 
-  const { itemFromListValues, setItemFromListValues } = useContext(GlobalContext)
+  const { itemFromListValues, setItemFromListValues } =
+    useContext(GlobalContext)
 
   function handleAddNewItemToItemList() {
     setItemFromListValues((oldValue) => [
