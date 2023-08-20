@@ -14,7 +14,10 @@ import "react-toastify/dist/ReactToastify.css"
 import { api } from "@/lib/api"
 
 const loginFormSchema = z.object({
-  email: z.string().email().min(1, { message: "Can't be empty!" }),
+  email: z
+    .string()
+    .email({ message: "Invalid e-mail type!" })
+    .min(1, { message: "Can't be empty!" }),
   password: z.string().min(1, { message: "Can't be empty!" }),
 })
 
@@ -24,10 +27,11 @@ const LoginModal = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewLoginType>({
     resolver: zodResolver(loginFormSchema),
   })
+
   const route = useRouter()
 
   async function handleLogin(data: NewLoginType) {
@@ -81,7 +85,7 @@ const LoginModal = () => {
               />
               {errors.email && (
                 <p className="text-sm text-light-red mt-1">
-                  E-mail can't be empty.
+                  {errors.email.message}
                 </p>
               )}
             </label>
@@ -108,7 +112,10 @@ const LoginModal = () => {
                 Forgot Password?
               </Link>
             </div>
-            <button className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center">
+            <button
+              disabled={isSubmitting}
+              className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center"
+            >
               <span>Login</span>
             </button>
             <p className="text-center text-pure-white">

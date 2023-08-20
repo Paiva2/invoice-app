@@ -1,60 +1,72 @@
 "use client"
-import React, { FormEvent, useState } from "react"
+
+import React from "react"
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import Link from "next/link"
 import { api } from "@/lib/api"
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 
 import "react-toastify/dist/ReactToastify.css"
-import triggerToastSucess from "@/utils/toast"
+import triggerToastSucess, {
+  triggerToastError,
+  triggerToastWarning,
+} from "@/utils/toast"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import CustomInput from "../CustomInput"
+import { AxiosError } from "axios"
+
+const registerSchema = z
+  .object({
+    email: z
+      .string()
+      .email({ message: "Invalid e-mail type!" })
+      .min(1, { message: "Can't be empty!" }),
+    password: z.string().min(1, { message: "Can't be empty!" }),
+    username: z.string().min(1, { message: "Can't be empty!" }),
+    confirmPassword: z.string().min(1, { message: "Can't be empty!" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match!",
+    path: ["confirmPassword"],
+  })
+
+export type NewRegisterType = z.infer<typeof registerSchema>
 
 const RegisterModal = () => {
-  const registerSchema = {
-    email: {
-      value: "",
-      error: false,
-    },
-    username: {
-      value: "",
-      error: false,
-    },
-    password: {
-      value: "",
-      error: false,
-    },
-    confirmPassword: {
-      value: "",
-      error: false,
-    },
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<NewRegisterType>({
+    resolver: zodResolver(registerSchema),
+  })
 
-  const [registerFields, setRegisterFields] = useState(registerSchema)
-
-  function updateFieldValues(field: string, value: string) {
-    setRegisterFields((oldValue) => ({
-      ...oldValue,
-      [field]: {
-        value,
-        error: oldValue[field as keyof typeof oldValue].error,
-      },
-    }))
-  }
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-
+  async function handleRegisterNewUser(data: NewRegisterType) {
     try {
       const registerBody = {
-        email: registerFields.email.value,
-        username: registerFields.username.value,
-        password: registerFields.password.value,
+        email: data.email,
+        username: data.username,
+        password: data.password,
       }
 
       await api.post("/register", registerBody)
 
-      triggerToastSucess("Register successful!")
+      triggerToastSucess("Register successfull!")
+
+      reset()
     } catch (error) {
-      console.error("There was an error creating the account.")
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 422) {
+          triggerToastError("All fields must be filled!")
+        } else if (error.response?.status === 409) {
+          triggerToastWarning("E-mail already registered!")
+        }
+      }
+
+      console.error("There was an error logging in...")
     }
   }
 
@@ -74,57 +86,65 @@ const RegisterModal = () => {
             <span className="font-semibold mt-1">Sign up with Github</span>
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="my-10">
+        <form onSubmit={handleSubmit(handleRegisterNewUser)} className="my-10">
           <div className="flex flex-col space-y-5">
             <label>
               <p className="font-medium text-pure-white pb-2">Email address</p>
               <input
-                onChange={({ target }) => updateFieldValues("email", target.value)}
-                id="email"
-                name="email"
+                {...register("email", { required: true })}
                 type="email"
                 className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter email address"
               />
+              {errors.email && (
+                <p className="text-sm text-light-red mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </label>
             <label>
               <p className="font-medium text-pure-white pb-2">Username</p>
               <input
-                onChange={({ target }) =>
-                  updateFieldValues("username", target.value)
-                }
-                id="username"
-                name="username"
+                {...register("username", { required: true })}
                 type="text"
                 className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter your username"
               />
+              {errors.username && (
+                <p className="text-sm text-light-red mt-1">
+                  {errors.username.message}
+                </p>
+              )}
             </label>
             <label>
               <p className="font-medium text-pure-white pb-2">Password</p>
               <input
-                onChange={({ target }) =>
-                  updateFieldValues("password", target.value)
-                }
-                id="password"
-                name="password"
+                {...register("password", { required: true })}
                 type="password"
                 className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter your password"
               />
+              {errors.password && (
+                <p className="text-sm text-light-red mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">Confirm password</p>
+              <p className="font-medium text-pure-white pb-2">
+                Confirm password
+              </p>
               <input
-                onChange={({ target }) =>
-                  updateFieldValues("confirmPassword", target.value)
-                }
-                id="confirm-password"
-                name="confirm-password"
+                {...register("confirmPassword", { required: true })}
                 type="password"
                 className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Confirm your password"
               />
+              {errors.confirmPassword && (
+                <p className="text-sm text-light-red mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </label>
             <div>
               <Link
@@ -136,7 +156,8 @@ const RegisterModal = () => {
             </div>
             <button
               type="submit"
-              className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center"
+              disabled={isSubmitting}
+              className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center disabled:bg-dark-blue"
             >
               <span>Register</span>
             </button>

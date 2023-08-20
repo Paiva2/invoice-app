@@ -25,3 +25,16 @@ export function triggerToastError(message: string) {
     theme: "dark",
   })
 }
+
+export function triggerToastWarning(message: string) {
+  return toast.warning(message, {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+  })
+}
