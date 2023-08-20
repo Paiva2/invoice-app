@@ -2,24 +2,18 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
 import { NextRequest, NextResponse } from "next/server"
 
-interface RegisterRequestBody {
+interface ChangePasswordRequestBody {
   email: string
   password: string
   username: string
 }
 
-export async function POST(request: NextRequest) {
-  const res = (await request.json()) as RegisterRequestBody
+export async function PATCH(request: NextRequest) {
+  const res = (await request.json()) as ChangePasswordRequestBody
 
   if (!res.email)
     return NextResponse.json(
       { error: "E-mail can't be empty!" },
-      { status: 422 }
-    )
-
-  if (!res?.username)
-    return NextResponse.json(
-      { error: "Username can't be empty!" },
       { status: 422 }
     )
 
@@ -29,17 +23,14 @@ export async function POST(request: NextRequest) {
       { status: 422 }
     )
 
-  const isEmailAlreadyRegistered = await prisma.user.findUnique({
+  const isUserOnDatabase = await prisma.user.findUnique({
     where: {
       email: res.email,
     },
   })
 
-  if (isEmailAlreadyRegistered) {
-    return NextResponse.json(
-      { error: "This e-mail is already registered!" },
-      { status: 409 }
-    )
+  if (!isUserOnDatabase) {
+    return NextResponse.json({ error: "E-mail not found!" }, { status: 409 })
   }
 
   const saltRounds = 10
@@ -47,22 +38,21 @@ export async function POST(request: NextRequest) {
 
   const hashedPassword = bcrypt.hashSync(passwordToHash, saltRounds)
 
-  const newUser = await prisma.user.create({
+  await prisma.user.update({
+    where: {
+      id: isUserOnDatabase.id,
+    },
     data: {
-      name: res.username,
-      email: res.email,
       password: hashedPassword,
-      image: "https://i.postimg.cc/0NhyFYLj/transferir.jpg",
     },
   })
 
   return new NextResponse(
     JSON.stringify({
-      status: "success",
-      data: { user: { ...newUser, password: undefined } },
+      status: "Password successfully changed!",
     }),
     {
-      status: 201,
+      status: 200,
       headers: { "Content-Type": "application/json" },
     }
   )

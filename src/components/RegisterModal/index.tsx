@@ -4,9 +4,6 @@ import React from "react"
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import Link from "next/link"
 import { api } from "@/lib/api"
-import { ToastContainer } from "react-toastify"
-
-import "react-toastify/dist/ReactToastify.css"
 import triggerToastSucess, {
   triggerToastError,
   triggerToastWarning,
@@ -14,8 +11,8 @@ import triggerToastSucess, {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import CustomInput from "../CustomInput"
 import { AxiosError } from "axios"
+import ToastifyContainer from "../ToastifyContainer"
 
 const registerSchema = z
   .object({
@@ -86,7 +83,7 @@ const RegisterModal = () => {
             <span className="font-semibold mt-1">Sign up with Github</span>
           </button>
         </div>
-        <form onSubmit={handleSubmit(handleRegisterNewUser)} className="my-10">
+        <form onSubmit={handleSubmit(handleRegisterNewUser)} className="mt-10">
           <div className="flex flex-col space-y-5">
             <label>
               <p className="font-medium text-pure-white pb-2">Email address</p>
@@ -176,7 +173,7 @@ const RegisterModal = () => {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      <ToastifyContainer />
     </div>
   )
 }

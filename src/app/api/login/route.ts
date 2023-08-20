@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { signJWT } from "@/lib/token"
 import bcrypt from "bcrypt"
+import { redirect } from "next/dist/server/api-utils"
 import { NextRequest, NextResponse } from "next/server"
 
 interface RequestLoginBody {
@@ -12,10 +13,16 @@ export async function POST(request: NextRequest) {
   const res = (await request.json()) as RequestLoginBody
 
   if (!res.email)
-    return NextResponse.json({ error: "E-mail can't be empty!" }, { status: 422 })
+    return NextResponse.json(
+      { error: "E-mail can't be empty!" },
+      { status: 422 }
+    )
 
   if (!res?.password)
-    return NextResponse.json({ error: "Password can't be empty!" }, { status: 422 })
+    return NextResponse.json(
+      { error: "Password can't be empty!" },
+      { status: 422 }
+    )
 
   const findUserOnDatabase = await prisma.user.findUnique({
     where: {

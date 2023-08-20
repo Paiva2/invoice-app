@@ -9,15 +9,14 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { triggerToastError } from "@/utils/toast"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 import { api } from "@/lib/api"
+import ToastifyContainer from "../ToastifyContainer"
 
 const loginFormSchema = z.object({
   email: z
     .string()
-    .email({ message: "Invalid e-mail type!" })
-    .min(1, { message: "Can't be empty!" }),
+    .min(1, { message: "Can't be empty!" })
+    .email({ message: "Invalid e-mail type!" }),
   password: z.string().min(1, { message: "Can't be empty!" }),
 })
 
@@ -41,14 +40,14 @@ const LoginModal = () => {
     }
 
     try {
-      const response = await api.post("/api/login", loginSchema)
+      const response = await api.post("/login", loginSchema)
 
       if (response.status === 200) {
         route.push("/invoices")
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 404) {
+        if (error.response?.status === 401) {
           triggerToastError("Invalid username or password!")
         }
       }
@@ -100,7 +99,7 @@ const LoginModal = () => {
               />
               {errors.password && (
                 <p className="text-sm text-light-red mt-1">
-                  Password can't be empty.
+                  {errors.password.message}
                 </p>
               )}
             </label>
@@ -114,7 +113,7 @@ const LoginModal = () => {
             </div>
             <button
               disabled={isSubmitting}
-              className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center"
+              className="w-full py-3 transition delay-70 ease-in-out font-medium text-pure-white bg-light-purple hover:bg-hover-purple rounded-lg inline-flex space-x-2 items-center justify-center disabled:bg-dark-blue"
             >
               <span>Login</span>
             </button>
@@ -133,7 +132,7 @@ const LoginModal = () => {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      <ToastifyContainer />
     </div>
   )
 }
