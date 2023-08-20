@@ -121,11 +121,11 @@ const FilterBar = () => {
       {openInvoiceForm && (
         <div
           onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
-          className="absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]"
+          className="absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)] lg:w-full lg:left-0 lg:z-50"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] h-full overflow-y-auto animate-open-edit"
+            className="bg-dark-purple w-[50%] h-full overflow-y-auto animate-open-edit lg:w-full"
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold">New Invoice</h2>

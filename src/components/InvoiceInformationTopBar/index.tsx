@@ -60,13 +60,13 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="bg-dark-blue p-8 rounded-lg flex justify-between items-center">
-        <div className="flex items-baseline gap-8">
+        <div className="flex items-baseline gap-8 sm:w-full sm:justify-between">
           <p className="text-sm">Status</p>
 
           <InvoiceTypePin type={invoice.status ?? "draft"} />
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 sm:absolute sm:bottom-[.3125rem] sm:w-full sm:justify-center sm:right-0">
           <button
             onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
             className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"

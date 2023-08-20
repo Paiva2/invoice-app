@@ -163,23 +163,23 @@ const SidebarMenu = () => {
       {openProfile && (
         <div
           onClick={() => setOpenProfile(!openProfile)}
-          className={`absolute z-20 w-[calc(100vw-6.75rem)] h-full left-[6.75rem] inset-0 bg-[rgba(0,0,0,0.6)] lg:left-0 lg:top-[6.75rem] lg:w-screen`}
+          className="absolute z-20 w-[calc(100vw-6.75rem)] h-full left-[6.75rem] inset-0 bg-[rgba(0,0,0,0.6)] lg:left-0 lg:w-screen lg:z-50"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[60%] md:w-[100%!important]"
+            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]"
           >
             {loadingProfile && <LoadingCircle />}
 
             {!loadingProfile && (
-              <div className="w-full p-6 gap-7 flex flex-col">
+              <div className="w-full p-6 gap-7 flex flex-col h-full justify-between">
                 <h2 className="text-3xl font-semibold text-pure-white">
                   Edit{" "}
                   <span className="text-hash-blue">{userData?.user.name}</span>{" "}
                   Profile
                 </h2>
                 <form
-                  className="flex flex-col gap-5 justify-center"
+                  className="flex flex-col gap-5 justify-between"
                   onSubmit={handleChangeProfile}
                 >
                   <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative">
@@ -255,10 +255,10 @@ const SidebarMenu = () => {
                       </span>
                     </button>
                   </div>
-                  <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
+                  <div className="w-full flex-col gap-3 flex items-center justify-center">
                     <button
                       disabled={editUserProfile.isLoading || !isAllFieldsFilled}
-                      className="bg-light-purple text-lg min-h-[48px] w-[95%] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple disabled:bg-dark-blue"
+                      className="bg-light-purple w-full text-lg min-h-[48px] rounded-3xl text-pure-white transition-all delay-75 ease-in-out py-1.5 leading-9 px-6 font-semibold hover:bg-hover-purple disabled:bg-dark-blue"
                       type="submit"
                     >
                       {!editUserProfile.isLoading ? (
@@ -270,7 +270,7 @@ const SidebarMenu = () => {
                     <button
                       disabled={editUserProfile.isLoading}
                       onClick={() => setOpenProfile(!openProfile)}
-                      className="bg-dark-blue text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue w-[95%]"
+                      className="bg-dark-blue w-full text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
                       type="button"
                     >
                       Discard changes

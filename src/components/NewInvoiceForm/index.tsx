@@ -140,18 +140,18 @@ const NewInvoiceForm = () => {
       >
         <InvoiceForm />
 
-        <div className="flex flex-row justify-between">
-          <div>
+        <div className="flex flex-row justify-between md:flex-col md:items-center">
+          <div className="md:w-full">
             <button
               onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
               type="button"
-              className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
+              className="bg-dark-blue rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue md:w-full"
             >
               Discard
             </button>
           </div>
-          <div className="self-end">
-            <div className="flex gap-2.5">
+          <div className="self-end md:self-center md:w-full md:justify-center md:flex">
+            <div className="flex gap-2.5 md:flex-col md:gap-5 md:w-full">
               <button
                 type="submit"
                 onClick={methods?.handleSubmit(handleSaveDraft)}

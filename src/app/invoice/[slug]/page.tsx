@@ -67,7 +67,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
 
   return (
     <PagesContainer>
-      <div className="flex flex-col w-[45%] justify-center gap-5">
+      <div className="flex flex-col w-[65%] justify-center gap-5 lg:w-[90%]">
         <Link
           href="/"
           className="flex items-baseline gap-3 cursor-pointer font-semibold text-base hover:text-[#888eb0]"
@@ -78,7 +78,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
 
         <InvoiceInformationTopBar invoice={invoice} />
 
-        <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8">
+        <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8 md:overflow-x-auto">
           <div className="flex justify-between">
             <div className="text-sm">
               <p className="font-bold">
@@ -96,7 +96,7 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
             </div>
           </div>
 
-          <div className="flex gap-10 justify-between flex-wrap break-words">
+          <div className="flex gap-10 justify-between flex-wrap break-words md:flex-col md:break-all">
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
                 <p className="text-sm">Invoice Date</p>
@@ -141,11 +141,11 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
       {openInvoiceForm && (
         <div
           onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
-          className={`absolute w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
+          className="absolute z-20 w-[calc(100vw-6.75rem)] h-full left-[6.75rem] inset-0 bg-[rgba(0,0,0,0.6)] lg:left-0 lg:w-screen lg:z-50"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] h-full overflow-y-auto animate-open-edit"
+            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]"
           >
             <div className="w-full p-6 gap-7 flex flex-col">
               <h2 className="text-3xl font-semibold">

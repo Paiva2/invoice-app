@@ -15,7 +15,7 @@ interface AmountTableProps {
 
 const AmountTable = ({ itemList }: AmountTableProps) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col md:min-w-[350px]">
       <div className="flex items-center justify-center bg-strong-blue max-h-[15rem] overflow-y-auto pt-10 px-2 pb-10 w-full flex-col rounded-t-lg">
         <table className="border-0 border-collapse border-spacing-[3px] w-full">
           <thead className="[&>th]:border-0 [&>th]:p-10">
@@ -46,7 +46,7 @@ const AmountTable = ({ itemList }: AmountTableProps) => {
         </table>
       </div>
       <div className="bg-spacial-dark p-6 rounded-b-lg">
-        <div className="w-full h-full flex items-center justify-between">
+        <div className="w-full h-full flex items-center justify-between break-all">
           <span className="text-sm">Amount Due</span>
           <h2 className="font-bold text-3xl">{getInvoiceTotalSum(itemList)}</h2>
         </div>
