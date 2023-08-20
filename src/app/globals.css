@@ -17,6 +17,10 @@ body {
   border-top: 5px solid #1e2139;
 }
 
+.Toastify__toast-theme--dark {
+  @apply bg-dark-blue !important;
+}
+
 .react-datepicker {
   @apply border-0 bg-dark-blue !important;
 }

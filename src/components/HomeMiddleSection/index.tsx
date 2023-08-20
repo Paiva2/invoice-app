@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useLayoutEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
@@ -10,8 +10,7 @@ import { useQuery } from "react-query"
 import { InvoiceSchema } from "../../../types"
 import { priceFormatter } from "@/utils/priceFormatter"
 import LoadingCircle from "../LoadingCircle"
-import { JWTPayload, decodeJwt } from "jose"
-import Cookies from "js-cookie"
+
 interface UserInvoice {
   userInformations: {
     userInvoices: Array<InvoiceSchema>

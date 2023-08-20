@@ -1,13 +1,17 @@
 "use client"
 
 import { RedirectIcon } from "@/icons/RedirectIcon"
-import axios from "axios"
+import { AxiosError } from "axios"
 import Link from "next/link"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
+import { triggerToastError } from "@/utils/toast"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { api } from "@/lib/api"
 
 const loginFormSchema = z.object({
   email: z.string().email().min(1, { message: "Can't be empty!" }),
@@ -17,7 +21,11 @@ const loginFormSchema = z.object({
 export type NewLoginType = z.infer<typeof loginFormSchema>
 
 const LoginModal = () => {
-  const { register, handleSubmit } = useForm<NewLoginType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NewLoginType>({
     resolver: zodResolver(loginFormSchema),
   })
   const route = useRouter()
@@ -29,12 +37,17 @@ const LoginModal = () => {
     }
 
     try {
-      const response = await axios.post("/api/login", loginSchema)
+      const response = await api.post("/api/login", loginSchema)
 
       if (response.status === 200) {
         route.push("/invoices")
       }
-    } catch {
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          triggerToastError("Invalid username or password!")
+        }
+      }
       console.error("There was an error logging in...")
     }
   }
@@ -62,20 +75,30 @@ const LoginModal = () => {
               <input
                 id="email"
                 type="email"
-                {...register("email")}
+                {...register("email", { required: true })}
                 className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter email address"
               />
+              {errors.email && (
+                <p className="text-sm text-light-red mt-1">
+                  E-mail can't be empty.
+                </p>
+              )}
             </label>
             <label>
               <p className="font-medium text-pure-white pb-2">Password</p>
               <input
                 id="password"
                 type="password"
-                {...register("password")}
+                {...register("password", { required: true })}
                 className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
                 placeholder="Enter your password"
               />
+              {errors.password && (
+                <p className="text-sm text-light-red mt-1">
+                  Password can't be empty.
+                </p>
+              )}
             </label>
             <div>
               <Link
@@ -103,6 +126,7 @@ const LoginModal = () => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   )
 }
