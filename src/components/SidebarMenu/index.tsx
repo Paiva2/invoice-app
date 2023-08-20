@@ -110,6 +110,8 @@ const SidebarMenu = () => {
 
     router.push("/login")
 
+    setOpenProfile(false)
+
     setUserInformations({ id: "", authorized: false })
   }
 
@@ -117,10 +119,10 @@ const SidebarMenu = () => {
 
   return (
     <Fragment>
-      <div className="h-screen z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between">
+      <div className="z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between lg:flex-row lg:h-auto lg:rounded-none">
         <button
           type="button"
-          className="group/logo p-[2.5rem] relative bg-light-purple flex items-center justify-center w-full rounded-r-[20px] overflow-hidden [&>svg]:z-20"
+          className="group/logo p-[2.5rem] relative bg-light-purple flex items-center justify-center w-full rounded-r-[20px] overflow-hidden [&>svg]:z-20 lg:w-auto sm:p-[1.375rem]"
         >
           <Logo />
           <div className="w-full absolute bottom-0 bg-[#cabff7] h-[50%] opacity-[.3] rounded-tl-[20px] rounded-br-[20px] duration-[.3s] ease-in-out group-hover/logo:h-[90%]" />
@@ -128,13 +130,13 @@ const SidebarMenu = () => {
         <div
           className={`flex ${
             !userInformations.authorized && "pb-10"
-          } flex-col gap-[1.875rem] items-center justify-center`}
+          } flex-col gap-[1.875rem] items-center justify-center lg:flex-row lg:w-[20%] sm:w-[35%!important] lg:pb-0`}
         >
           <button className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff]">
             <LightIcon />
           </button>
           {userInformations.authorized && (
-            <div className="w-full gap-5 flex-col border-t border-[#494e6e] py-[1.5625rem] flex items-center justify-center">
+            <div className="w-full gap-5 flex-col border-t border-[#494e6e] py-[1.5625rem] flex items-center justify-center lg:border-t-0 lg:border-l lg:p-0 lg:h-full lg:gap-3">
               <button
                 onClick={() => setOpenProfile(!openProfile)}
                 type="button"
@@ -147,7 +149,7 @@ const SidebarMenu = () => {
               <button
                 onClick={handleLogout}
                 type="button"
-                className="flex gap-2"
+                className="flex gap-2 sm:hidden"
               >
                 <p className="text-light-red hover:underline">Logout</p>
                 <span>
@@ -161,11 +163,11 @@ const SidebarMenu = () => {
       {openProfile && (
         <div
           onClick={() => setOpenProfile(!openProfile)}
-          className={`absolute z-20 w-[calc(100%-6.875rem)] h-full left-[6.875rem] top-0 bg-[rgba(0,0,0,0.6)]`}
+          className={`absolute z-20 w-[calc(100vw-6.75rem)] h-full left-[6.75rem] inset-0 bg-[rgba(0,0,0,0.6)] lg:left-0 lg:top-[6.75rem] lg:w-screen`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] h-full relative overflow-y-auto animate-open-edit"
+            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[60%] md:w-[100%!important]"
           >
             {loadingProfile && <LoadingCircle />}
 
@@ -237,6 +239,22 @@ const SidebarMenu = () => {
                       className="customInput text-strong-emerald"
                     />
                   </label>
+                  <div className="hidden w-full items-center justify-center sm:flex">
+                    <button
+                      onClick={handleLogout}
+                      type="button"
+                      className="flex gap-2"
+                    >
+                      <p className="text-light-red hover:underline">Logout</p>
+                      <span>
+                        <SignOut
+                          size={20}
+                          className="text-light-red"
+                          weight="bold"
+                        />
+                      </span>
+                    </button>
+                  </div>
                   <div className="w-full flex-col gap-3 absolute bottom-[.625rem] flex items-center justify-center right-0">
                     <button
                       disabled={editUserProfile.isLoading || !isAllFieldsFilled}

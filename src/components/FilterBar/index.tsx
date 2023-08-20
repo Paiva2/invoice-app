@@ -8,7 +8,7 @@ import { tv as tailwindVariants } from "tailwind-variants"
 import { GlobalContext } from "@/context/GlobalContext"
 
 const filterVisibility = tailwindVariants({
-  base: "absolute bg-strong-blue rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out left-[-15%] top-full py-5 px-7 w-[65%] [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadow-[0px_10px_20px_0px_rgba(0,0,0,.25)]",
+  base: "absolute bg-strong-blue rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out w-[60%] left-0 md:left-[-50px] top-[60px] py-5 px-7 md:w-full [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadow-[0px_10px_20px_0px_rgba(0,0,0,.25)]",
   variants: {
     visibility: {
       visible: "opacity-100 visible",
@@ -58,11 +58,13 @@ const FilterBar = () => {
     }
   }
   return (
-    <div className="flex flex-col w-[75%] max-w-[55rem]">
+    <div className="flex flex-col w-[75%] max-w-[55rem] md:w-[90%]">
       <div className="flex items-baseline justify-between w-full">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-bold">Invoices</h1>
-          <p className="text-sm font-light">There are 7 total invoices</p>
+        <div className="flex flex-col gap-2 md:gap-0">
+          <h1 className="text-4xl font-bold md:text-[1.25rem]">Invoices</h1>
+          <p className="text-sm font-light">
+            <span className="md:hidden">There are</span> 7 total invoices
+          </p>
         </div>
 
         <div className="flex items-center gap-5 relative">
@@ -71,7 +73,7 @@ const FilterBar = () => {
             onClick={() => setOpenFilterBar(!openFilterBar)}
             className="flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm"
           >
-            Filter by status{" "}
+            Filter <span className="md:hidden">by status</span>{" "}
             <span
               className={arrowRotation({
                 arrowRotate: openFilterBar ? "rotate" : "normal",
@@ -110,7 +112,9 @@ const FilterBar = () => {
             <span className="bg-pure-white grid items-center p-3 rounded-full">
               <PlusSymbol />
             </span>
-            <span>New invoice</span>
+            <span>
+              New <span className="md:hidden">invoice</span>
+            </span>
           </button>
         </div>
       </div>

@@ -44,8 +44,10 @@ export default function RootLayout({ children }: RootLayout) {
         <GlobalStorage>
           <SessionProvider>
             <QueryClientProvider client={queryClient}>
-              <SidebarMenu />
-              <NextAuthProvider>{children}</NextAuthProvider>
+              <div className="flex w-full lg:flex-col relative h-screen">
+                <SidebarMenu />
+                <NextAuthProvider>{children}</NextAuthProvider>
+              </div>
             </QueryClientProvider>
           </SessionProvider>
         </GlobalStorage>

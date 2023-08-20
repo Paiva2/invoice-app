@@ -82,7 +82,7 @@ const HomeMiddleSection = () => {
   return (
     <PagesContainer>
       <FilterBar />
-      <div className="flex flex-col w-[75%] gap-3.5 max-w-[55rem] h-[80vh] overflow-y-auto pr-3">
+      <div className="flex flex-col w-[75%] gap-3.5 max-w-[55rem] h-[80vh] overflow-y-auto pr-3 md:w-[90%] lg:h-auto md:pr-0">
         {renderFilteredInvoices?.map((invoice) => {
           return <Invoice key={invoice.id} userInvoice={invoice} />
         })}

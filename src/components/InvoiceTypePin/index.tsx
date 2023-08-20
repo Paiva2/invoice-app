@@ -2,7 +2,7 @@ import React from "react"
 import { tv } from "tailwind-variants"
 
 export const typePin = tv({
-  base: "flex justify-center items-baseline capitalize gap-2 py-1.5 pt-2.5 px-2.5 min-w-[6.25rem] rounded-md font-semibold before:inline-block before:w-2 before:h-2",
+  base: "flex justify-center items-baseline capitalize gap-2 py-1.5 pt-2.5 px-2.5 min-w-[6.25rem] rounded-md font-semibold before:inline-block before:w-2 before:h-2 sm:text-sm",
   variants: {
     type: {
       paid: "before:bg-strong-emerald before:rounded-full bg-transparent-emerald text-strong-emerald",

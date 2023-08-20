@@ -6,6 +6,11 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      md: { max: "48rem" },
+      sm: { max: "40rem" },
+      lg: { max: "65rem" },
+    },
     extend: {
       fontFamily: {
         spartan: "var(--font-spartan)",
