@@ -45,7 +45,7 @@ const SidebarMenu = () => {
       return response.data
     },
 
-    enabled: !!userInformations.id,
+    enabled: !!userInformations.id || openProfile,
   })
 
   const queryClient = useQueryClient()
@@ -60,7 +60,7 @@ const SidebarMenu = () => {
     },
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries("getUserInformations")
+      queryClient.invalidateQueries("getUserInformations")
 
       queryClient.invalidateQueries("getUserHomeInformations")
 
@@ -99,7 +99,7 @@ const SidebarMenu = () => {
   }
 
   useEffect(() => {
-    setTotalBalance(priceFormatter.format(userData?.user?.totalBalance))
+    setTotalBalance(userData?.user?.totalBalance)
     setUsername(userData?.user?.name)
   }, [userData, openProfile])
 
@@ -233,10 +233,11 @@ const SidebarMenu = () => {
                       onValueChange={(e) => {
                         setTotalBalance(e.formattedValue)
                       }}
-                      defaultValue={priceFormatter.format(
-                        userData?.user.totalBalance
-                      )}
-                      className="customInput text-strong-emerald"
+                      allowNegative={true}
+                      defaultValue={Number(userData?.user.totalBalance)}
+                      className={`customInput ${
+                        +totalBalance < 0 ? "text-red-500" : "text-green-500"
+                      }`}
                     />
                   </label>
                   <div className="hidden w-full items-center justify-center sm:flex">

@@ -57,8 +57,10 @@ const LoginModal = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-2/5 bg-strong-blue p-8 rounded-xl">
-        <h1 className="text-4xl font-medium text-pure-white">Login</h1>
+      <div className="w-2/5 transition-all delay-100 ease-in-out bg-strong-blue p-8 rounded-xl lg:w-[90%]">
+        <h1 className="text-4xl font-medium text-pure-white md:text-[1.5rem]">
+          Login
+        </h1>
         <p className="text-hash-blue">Welcome!</p>
 
         <div className="my-5">

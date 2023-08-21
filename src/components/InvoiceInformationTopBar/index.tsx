@@ -31,6 +31,8 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries("singleInvoice")
 
+      queryClient.invalidateQueries("getUserInformations")
+
       setOpenInvoiceForm(false)
     },
   })

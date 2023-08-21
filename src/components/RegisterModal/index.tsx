@@ -68,9 +68,11 @@ const RegisterModal = () => {
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-2/5 bg-strong-blue p-8 rounded-xl">
-        <h1 className="text-4xl font-medium text-pure-white">Register</h1>
+    <div className="w-full h-screen flex items-center justify-center lg:pt-5 lg:pb-5 md:overflow-auto">
+      <div className="w-2/5 bg-strong-blue p-8 rounded-xl transition-all delay-100 ease-in-out lg:w-[90%] md:px-10 md:py-10 md:overflow-auto md:h-full">
+        <h1 className="text-4xl font-medium text-pure-white md:text-[1.5rem]">
+          Register
+        </h1>
         <p className="text-hash-blue">Welcome!</p>
 
         <div className="my-5">
@@ -158,7 +160,7 @@ const RegisterModal = () => {
             >
               <span>Register</span>
             </button>
-            <p className="text-center text-pure-white">
+            <p className="text-center text-pure-white md:mt-[40px!important]">
               Already registered?{" "}
               <Link
                 href="/login"

@@ -10,6 +10,7 @@ import { useQuery } from "react-query"
 import { InvoiceSchema } from "../../../types"
 import { priceFormatter } from "@/utils/priceFormatter"
 import LoadingCircle from "../LoadingCircle"
+import Placeholder from "@/icons/Placeholder"
 
 interface UserInvoice {
   userInformations: {
@@ -86,6 +87,20 @@ const HomeMiddleSection = () => {
         {renderFilteredInvoices?.map((invoice) => {
           return <Invoice key={invoice.id} userInvoice={invoice} />
         })}
+        {!renderFilteredInvoices.length && (
+          <div className="flex flex-col w-full items-center justify-center h-full gap-5">
+            <Placeholder />
+            <p className="text-[1.5625rem] text-pure-white font-semibold">
+              There is nothing here
+            </p>
+
+            <p className="text-[#888eb0] text-center text-sm">
+              Create an invoice by clicking the
+              <br /> <span className="font-semibold">New Invoice</span> button
+              and get started
+            </p>
+          </div>
+        )}
         <div className="text-center flex gap-5 self-end">
           <div>
             <h1 className="text-xl font-bold">Total balance</h1>

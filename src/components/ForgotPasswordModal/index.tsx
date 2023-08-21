@@ -65,8 +65,8 @@ const ForgotPasswordModal = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-2/5 bg-strong-blue p-8 rounded-xl">
-        <h1 className="text-4xl font-medium text-pure-white">
+      <div className="w-2/5 bg-strong-blue p-8 rounded-xl transition-all delay-100 ease-in-out lg:w-[90%] md:px-10 md:py-">
+        <h1 className="text-4xl font-medium text-pure-white md:text-[1.5rem]">
           Forgot your Password?
         </h1>
 
