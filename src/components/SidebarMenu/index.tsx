@@ -20,6 +20,7 @@ import NumberFormatInput from "../NumberFormatInput"
 import LoadingCircle from "../LoadingCircle"
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 
 const SidebarMenu = () => {
   const { userInformations, setUserInformations } = useContext(GlobalContext)
@@ -113,6 +114,8 @@ const SidebarMenu = () => {
     setOpenProfile(false)
 
     setUserInformations({ id: "", authorized: false })
+
+    signOut()
   }
 
   const isAllFieldsFilled = Boolean(totalBalance && username)

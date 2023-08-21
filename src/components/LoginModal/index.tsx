@@ -3,7 +3,7 @@
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import { AxiosError } from "axios"
 import Link from "next/link"
-import React from "react"
+import React, { useLayoutEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 import { triggerToastError } from "@/utils/toast"
 import { api } from "@/lib/api"
 import ToastifyContainer from "../ToastifyContainer"
+import { useSession, signIn } from "next-auth/react"
 
 const loginFormSchema = z.object({
   email: z
@@ -23,6 +24,8 @@ const loginFormSchema = z.object({
 export type NewLoginType = z.infer<typeof loginFormSchema>
 
 const LoginModal = () => {
+  const session = useSession()
+
   const {
     register,
     handleSubmit,
@@ -55,6 +58,35 @@ const LoginModal = () => {
     }
   }
 
+  async function handleLoginWithProvider() {
+    const loginSchema = {
+      email: session.data?.user?.email,
+      password: null,
+      provider: "github",
+    }
+
+    try {
+      const response = await api.post("/login", loginSchema)
+
+      if (response.status === 200) {
+        route.push("/invoices")
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          triggerToastError("Invalid username or password!")
+        }
+      }
+      console.error("There was an error logging in...")
+    }
+  }
+
+  useLayoutEffect(() => {
+    if (session.status === "authenticated") {
+      handleLoginWithProvider()
+    }
+  }, [session])
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-2/5 transition-all delay-100 ease-in-out bg-strong-blue p-8 rounded-xl lg:w-[90%]">
@@ -64,7 +96,10 @@ const LoginModal = () => {
         <p className="text-hash-blue">Welcome!</p>
 
         <div className="my-5">
-          <button className="w-full py-3 my-3 border flex space-x-2 items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out text-pure-white  hover:bg-hover-purple">
+          <button
+            onClick={() => signIn("github")}
+            className="w-full py-3 my-3 border flex space-x-2 items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out text-pure-white  hover:bg-hover-purple"
+          >
             <img
               src="https://www.svgrepo.com/show/361182/github-inverted.svg"
               className="w-7 h-7"

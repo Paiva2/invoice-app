@@ -6,28 +6,33 @@ interface RegisterRequestBody {
   email: string
   password: string
   username: string
+  provider?: string
+  image?: string
 }
 
 export async function POST(request: NextRequest) {
   const res = (await request.json()) as RegisterRequestBody
 
-  if (!res.email)
+  if (!res.email) {
     return NextResponse.json(
       { error: "E-mail can't be empty!" },
       { status: 422 }
     )
+  }
 
-  if (!res?.username)
+  if (!res?.username) {
     return NextResponse.json(
       { error: "Username can't be empty!" },
       { status: 422 }
     )
+  }
 
-  if (!res?.password)
+  if (!res?.password && !res.provider) {
     return NextResponse.json(
       { error: "Password can't be empty!" },
       { status: 422 }
     )
+  }
 
   const isEmailAlreadyRegistered = await prisma.user.findUnique({
     where: {
@@ -42,24 +47,31 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const saltRounds = 10
-  const passwordToHash = res.password
+  let passwordToHash = ""
+  let saltRounds = 10
+  let hashedPassword: string | null = null
 
-  const hashedPassword = bcrypt.hashSync(passwordToHash, saltRounds)
+  if (res.password && !res.provider) {
+    passwordToHash = res.password
+
+    hashedPassword = bcrypt.hashSync(passwordToHash, saltRounds)
+  }
 
   const newUser = await prisma.user.create({
     data: {
       name: res.username,
       email: res.email,
       password: hashedPassword,
-      image: "https://i.postimg.cc/0NhyFYLj/transferir.jpg",
+      image: res.provider
+        ? res.image
+        : "https://i.postimg.cc/0NhyFYLj/transferir.jpg",
     },
   })
 
   return new NextResponse(
     JSON.stringify({
       status: "success",
-      data: { user: { ...newUser, password: undefined } },
+      data: { user: { ...newUser, password: null } },
     }),
     {
       status: 201,
