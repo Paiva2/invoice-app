@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import InvoiceTypePin from "../InvoiceTypePin"
 import { GlobalContext } from "@/context/GlobalContext"
 import { InvoiceSchema } from "../../../types"
@@ -15,6 +15,8 @@ interface InvoiceInformationProps {
 const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
   const { openInvoiceForm, setOpenInvoiceForm, userInformations } =
     useContext(GlobalContext)
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -55,6 +57,10 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     editInvoice.mutateAsync(invoice)
   }
 
+  async function handleOpenConfirmDelete() {
+    setOpenDeleteModal(!openDeleteModal)
+  }
+
   async function handleDeleteInvoice() {
     deleteInvoice.mutateAsync(invoice.id)
   }
@@ -77,7 +83,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
             Edit
           </button>
           <button
-            onClick={handleDeleteInvoice}
+            onClick={handleOpenConfirmDelete}
             className="bg-light-red px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
             type="button"
           >
@@ -95,6 +101,46 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
           )}
         </div>
       </div>
+      {openDeleteModal && (
+        <div
+          onClick={() => setOpenInvoiceForm(!openDeleteModal)}
+          className="absolute flex items-center justify-center z-20 w-[calc(100vw-6.75rem)] h-full left-[6.75rem] inset-0 bg-[rgba(0,0,0,0.6)] lg:left-0 lg:w-screen lg:z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-dark-blue w-[40%] relative h-[35%] rounded-lg transition-all delay-100 ease-in-out overflow-y-auto animate-open-edit lg:w-[50%] md:w-[80%!important] sm:h-[auto]"
+          >
+            <div className="w-full p-6 gap-7 flex flex-col px-10 py-10">
+              <h2 className="text-4xl font-semibold text-center sm:text-2xl">
+                Confirm Delete
+              </h2>
+
+              <p className="text-[#888eb0] sm:text-sm">
+                Are you sure you want to delete invoice #{invoice.id}? This
+                action cannot be undone.
+              </p>
+
+              <div className="flex self-end gap-5 sm:self-center">
+                <button
+                  onClick={() => setOpenDeleteModal(!openDeleteModal)}
+                  className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
+                  type="button"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleDeleteInvoice}
+                  className="bg-light-red px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
+                  type="button"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
