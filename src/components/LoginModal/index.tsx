@@ -11,7 +11,8 @@ import { useRouter } from "next/navigation"
 import { triggerToastError } from "@/utils/toast"
 import { api } from "@/lib/api"
 import ToastifyContainer from "../ToastifyContainer"
-import { useSession, signIn } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react"
+import { LoginSchemaInterface } from "../../../types"
 
 const loginFormSchema = z.object({
   email: z
@@ -36,12 +37,7 @@ const LoginModal = () => {
 
   const route = useRouter()
 
-  async function handleLogin(data: NewLoginType) {
-    const loginSchema = {
-      email: data.email,
-      password: data.password,
-    }
-
+  async function fetchLogin(loginSchema: LoginSchemaInterface) {
     try {
       const response = await api.post("/login", loginSchema)
 
@@ -52,33 +48,33 @@ const LoginModal = () => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           triggerToastError("Invalid username or password!")
+
+          signOut({
+            redirect: false,
+          })
         }
       }
       console.error("There was an error logging in...")
     }
   }
 
-  async function handleLoginWithProvider() {
+  async function handleLogin(data: NewLoginType) {
     const loginSchema = {
-      email: session.data?.user?.email,
+      email: data.email,
+      password: data.password,
+    }
+
+    fetchLogin(loginSchema)
+  }
+
+  async function handleLoginWithProvider() {
+    const loginSchemaWithProvider = {
+      email: session.data?.user?.email as string,
       password: null,
       provider: "github",
     }
 
-    try {
-      const response = await api.post("/login", loginSchema)
-
-      if (response.status === 200) {
-        route.push("/invoices")
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          triggerToastError("Invalid username or password!")
-        }
-      }
-      console.error("There was an error logging in...")
-    }
+    fetchLogin(loginSchemaWithProvider)
   }
 
   useLayoutEffect(() => {

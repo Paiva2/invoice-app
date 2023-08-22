@@ -34,3 +34,9 @@ export interface UserProfileSchema {
   name?: string
   totalBalance?: string
 }
+
+export interface LoginSchemaInterface {
+  email: string
+  password: string | null
+  provider?: string
+}
