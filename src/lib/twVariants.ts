@@ -43,8 +43,8 @@ export const inputTheme = tv({
   base: "w-full py-3 text-pure-white border hover:border-light-purple rounded-lg px-3 focus:outline-none focus:border-light-purple",
   variants: {
     theme: {
-      light: "bg-pure-white",
-      dark: "bg-dark-blue border-transparent",
+      light: "bg-pure-white text-dark-blue",
+      dark: "bg-dark-blue border-transparent text-pure-white",
     },
   },
   defaultVariants: {

@@ -8,11 +8,15 @@ import { tv as tailwindVariants } from "tailwind-variants"
 import { GlobalContext } from "@/context/GlobalContext"
 
 const filterVisibility = tailwindVariants({
-  base: "absolute bg-strong-blue rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out w-[60%] left-0 md:left-[-50px] top-[60px] py-5 px-7 md:w-full [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadow-[0px_10px_20px_0px_rgba(0,0,0,.25)]",
+  base: "absolute rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out w-[60%] left-0 md:left-[-50px] top-[60px] py-5 px-7 md:w-full [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadowForLight",
   variants: {
     visibility: {
       visible: "opacity-100 visible",
       hidden: "opacity-0 invisible",
+    },
+    theme: {
+      dark: "bg-strong-blue text-pure-white",
+      light: "bg-pure-white text-dark-blue",
     },
   },
   defaultVariants: {
@@ -33,16 +37,32 @@ export const arrowRotation = tailwindVariants({
   },
 })
 
+export const filterTextTheme = tailwindVariants({
+  base: "flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm",
+  variants: {
+    theme: {
+      dark: "text-pure-white",
+      light: "text-dark-blue",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
+
 const FilterBar = () => {
   const {
     selectedFilters,
     openInvoiceForm,
     invoices,
+    colorTheme,
     setSelectedFilter,
     setOpenInvoiceForm,
   } = useContext(GlobalContext)
 
   const [openFilterBar, setOpenFilterBar] = useState(false)
+  const isLightTheme = colorTheme === "light"
+
   const filtersTypes = ["Draft", "Pending", "Paid"]
 
   const getSelectedFilters = (e: MouseEvent<HTMLInputElement>) => {
@@ -61,7 +81,11 @@ const FilterBar = () => {
   return (
     <div className="flex flex-col w-[75%] max-w-[55rem] md:w-[90%]">
       <div className="flex items-baseline justify-between w-full">
-        <div className="flex flex-col gap-2 md:gap-0">
+        <div
+          className={`flex flex-col gap-2 md:gap-0 text-${
+            isLightTheme ? "dark-blue" : "pure-white"
+          }`}
+        >
           <h1 className="text-4xl font-bold md:text-[1.25rem]">Invoices</h1>
           <p className="text-sm font-light">
             <span className="md:hidden">There are</span>{" "}
@@ -73,7 +97,9 @@ const FilterBar = () => {
           <button
             type="button"
             onClick={() => setOpenFilterBar(!openFilterBar)}
-            className="flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm"
+            className={filterTextTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             Filter <span className="md:hidden">by status</span>{" "}
             <span
@@ -88,6 +114,7 @@ const FilterBar = () => {
           <ul
             className={filterVisibility({
               visibility: openFilterBar ? "visible" : "hidden",
+              theme: isLightTheme ? "light" : "dark",
             })}
           >
             {filtersTypes.map((filter) => {
@@ -109,7 +136,7 @@ const FilterBar = () => {
           <button
             onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
             type="button"
-            className="flex items-baseline gap-3 bg-light-purple py-2 px-3 duration-[.3s] ease-in-out rounded-full hover:bg-hover-purple"
+            className="shadowForLight flex items-baseline gap-3 bg-light-purple py-2 px-3 duration-[.3s] ease-in-out rounded-full hover:bg-hover-purple"
           >
             <span className="bg-pure-white grid items-center p-3 rounded-full">
               <PlusSymbol />

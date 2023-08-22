@@ -118,7 +118,7 @@ const GlobalStorage = ({ children }: Props) => {
     if (colorTheme === "dark") {
       document.body.style.backgroundColor = "#141625"
     } else {
-      document.body.style.backgroundColor = "#f8f8fb"
+      document.body.style.backgroundColor = "#eeeeee"
     }
   }, [currentPage, colorTheme])
 
