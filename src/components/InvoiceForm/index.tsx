@@ -107,7 +107,9 @@ const InvoiceForm = () => {
         </div>
 
         <div className="w-full flex-col flex">
-          <span>Invoice Date</span>
+          <span className={`text-${isLightTheme ? "dark-blue" : "pure-white"}`}>
+            Invoice Date
+          </span>
           <DatePicker
             selected={dueDate}
             onChange={(date: Date) => setDueDate(date)}

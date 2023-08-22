@@ -4,10 +4,23 @@ import ArrowDown from "@/icons/ArrowDown"
 import PlusSymbol from "@/icons/PlusSymbol"
 import React, { MouseEvent, useContext, useState } from "react"
 import NewInvoiceForm from "../NewInvoiceForm"
-import { tv as tailwindVariants } from "tailwind-variants"
+import { tv } from "tailwind-variants"
 import { GlobalContext } from "@/context/GlobalContext"
 
-const filterVisibility = tailwindVariants({
+const newInvoiceColorTheme = tv({
+  base: "w-[50%] h-full overflow-y-auto animate-open-edit lg:w-full",
+  variants: {
+    theme: {
+      dark: "bg-dark-purple",
+      light: "bg-light-bg",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
+
+const filterVisibility = tv({
   base: "absolute rounded-lg gap-2.5 flex flex-col transition-all delay-100 ease-in-out w-[60%] left-0 md:left-[-50px] top-[60px] py-5 px-7 md:w-full [&>li>label]:flex [&>li>label]:gap-3 [&>li>label]:items-baseline font-semibold shadowForLight",
   variants: {
     visibility: {
@@ -24,7 +37,7 @@ const filterVisibility = tailwindVariants({
   },
 })
 
-export const arrowRotation = tailwindVariants({
+export const arrowRotation = tv({
   base: "transition delay-70 ease-in-out",
   variants: {
     arrowRotate: {
@@ -37,7 +50,7 @@ export const arrowRotation = tailwindVariants({
   },
 })
 
-export const filterTextTheme = tailwindVariants({
+export const filterTextTheme = tv({
   base: "flex items-baseline [&>svg]:transition [&>svg]:delay-100 [&>svg]:ease-in-out gap-2.5 font-bold text-sm",
   variants: {
     theme: {
@@ -154,10 +167,18 @@ const FilterBar = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[50%] h-full overflow-y-auto animate-open-edit lg:w-full"
+            className={newInvoiceColorTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             <div className="w-full p-6 gap-7 flex flex-col">
-              <h2 className="text-3xl font-semibold">New Invoice</h2>
+              <h2
+                className={`text-3xl font-semibold text-${
+                  isLightTheme ? "dark-blue" : "pure-white"
+                }`}
+              >
+                New Invoice
+              </h2>
               <NewInvoiceForm />
             </div>
           </div>
