@@ -13,6 +13,7 @@ import { api } from "@/lib/api"
 import dayjs from "dayjs"
 import { GlobalContext } from "@/context/GlobalContext"
 import LoadingCircle from "@/components/LoadingCircle"
+import { Helmet } from "react-helmet"
 
 interface SingleInvoice {
   params: {
@@ -67,6 +68,9 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
 
   return (
     <PagesContainer>
+      <Helmet>
+        <title>Invoice | {invoice.id}</title>
+      </Helmet>
       <div className="flex flex-col w-[65%] justify-center gap-5 lg:w-[90%]">
         <Link
           href="/"

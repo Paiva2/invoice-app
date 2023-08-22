@@ -1,53 +1,18 @@
 "use client"
 
-import React, { useContext, useState } from "react"
+import React, { useContext } from "react"
 import FilterBar from "../FilterBar"
 import Invoice from "./Invoice"
 import PagesContainer from "../PagesContainer"
 import { GlobalContext } from "@/context/GlobalContext"
-import { api } from "@/lib/api"
-import { useQuery } from "react-query"
-import { InvoiceSchema } from "../../../types"
 import { priceFormatter } from "@/utils/priceFormatter"
 import LoadingCircle from "../LoadingCircle"
 import Placeholder from "@/icons/Placeholder"
-
-interface UserInvoice {
-  userInformations: {
-    userInvoices: Array<InvoiceSchema>
-    informations: string
-  }
-}
+import { Helmet } from "react-helmet"
 
 const HomeMiddleSection = () => {
-  const { userInformations, selectedFilters } = useContext(GlobalContext)
-  const [loadingInvoices, setLoadingInvoices] = useState(true)
-
-  const { data: invoices, isLoading } = useQuery({
-    queryKey: ["getUserHomeInformations"],
-
-    queryFn: async () => {
-      setLoadingInvoices(true)
-
-      const response = await api.post<UserInvoice>("/invoices", {
-        id: userInformations.id,
-      })
-
-      const sortInvoicesByDate =
-        response.data?.userInformations.userInvoices.sort((a, b) => {
-          return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
-        })
-
-      setLoadingInvoices(false)
-
-      return {
-        invoices: sortInvoicesByDate,
-        userTotalBalance: response.data?.userInformations.informations,
-      }
-    },
-
-    enabled: userInformations.authorized,
-  })
+  const { selectedFilters, invoices, loadingInvoices, isLoading } =
+    useContext(GlobalContext)
 
   if (!invoices || isLoading) return
 
@@ -82,6 +47,9 @@ const HomeMiddleSection = () => {
 
   return (
     <PagesContainer>
+      <Helmet>
+        <title>Home | Invoices</title>
+      </Helmet>
       <FilterBar />
       <div className="flex flex-col w-[75%] gap-3.5 max-w-[55rem] h-[80vh] overflow-y-auto pr-3 md:w-[90%] lg:h-auto md:pr-0">
         {renderFilteredInvoices?.map((invoice) => {

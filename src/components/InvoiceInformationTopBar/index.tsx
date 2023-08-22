@@ -35,6 +35,8 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
 
       queryClient.invalidateQueries("getUserInformations")
 
+      queryClient.invalidateQueries("getUserHomeInformations")
+
       setOpenInvoiceForm(false)
     },
   })

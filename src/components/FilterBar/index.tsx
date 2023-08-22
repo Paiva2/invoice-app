@@ -36,9 +36,10 @@ export const arrowRotation = tailwindVariants({
 const FilterBar = () => {
   const {
     selectedFilters,
+    openInvoiceForm,
+    invoices,
     setSelectedFilter,
     setOpenInvoiceForm,
-    openInvoiceForm,
   } = useContext(GlobalContext)
 
   const [openFilterBar, setOpenFilterBar] = useState(false)
@@ -63,7 +64,8 @@ const FilterBar = () => {
         <div className="flex flex-col gap-2 md:gap-0">
           <h1 className="text-4xl font-bold md:text-[1.25rem]">Invoices</h1>
           <p className="text-sm font-light">
-            <span className="md:hidden">There are</span> 7 total invoices
+            <span className="md:hidden">There are</span>{" "}
+            {invoices?.invoices.length} total invoices
           </p>
         </div>
 

@@ -9,8 +9,10 @@ import {
 } from "react"
 import { JWTPayload, decodeJwt } from "jose"
 import Cookies from "js-cookie"
-import { InvoiceItemList, InvoiceSchema } from "../../../types"
+import { InvoiceItemList, InvoiceSchema, UserInvoice } from "../../../types"
 import { usePathname } from "next/navigation"
+import { api } from "@/lib/api"
+import { useQuery } from "react-query"
 
 interface Props {
   children: React.ReactNode
@@ -44,6 +46,19 @@ interface GlobalContextInterface {
 
   dueDate: Date
   setDueDate: Dispatch<SetStateAction<Date>>
+
+  colorTheme: string
+  setColorTheme: Dispatch<SetStateAction<string>>
+
+  loadingInvoices: boolean
+
+  isLoading: boolean
+  invoices:
+    | {
+        invoices: InvoiceSchema[]
+        userTotalBalance: string
+      }
+    | undefined
 }
 
 export const GlobalContext = createContext<GlobalContextInterface>({} as any)
@@ -71,9 +86,12 @@ const GlobalStorage = ({ children }: Props) => {
   const [invoiceBeingVisualized, setInvoiceBeingVisualized] = useState(
     {} as InvoiceSchema
   )
+  const [loadingInvoices, setLoadingInvoices] = useState(true)
 
   const currentPage = usePathname()
   const authToken = Cookies.get("invoice-app-auth")
+
+  const [colorTheme, setColorTheme] = useState("")
 
   function getUserToken() {
     if (!authToken) return
@@ -89,6 +107,47 @@ const GlobalStorage = ({ children }: Props) => {
     getUserToken()
   }, [currentPage])
 
+  useLayoutEffect(() => {
+    if (!localStorage) return
+
+    const isThemeAlreadyChosen =
+      localStorage.getItem("invoice-app-theme") ?? "dark"
+
+    setColorTheme(isThemeAlreadyChosen)
+
+    if (colorTheme === "dark") {
+      document.body.style.backgroundColor = "#141625"
+    } else {
+      document.body.style.backgroundColor = "#f8f8fb"
+    }
+  }, [currentPage, colorTheme])
+
+  const { data: invoices, isLoading } = useQuery({
+    queryKey: ["getUserHomeInformations"],
+
+    queryFn: async () => {
+      setLoadingInvoices(true)
+
+      const response = await api.post<UserInvoice>("/invoices", {
+        id: userInformations.id,
+      })
+
+      const sortInvoicesByDate =
+        response.data?.userInformations.userInvoices.sort((a, b) => {
+          return +new Date(b.invoiceDateTo) - +new Date(a.invoiceDateTo)
+        })
+
+      setLoadingInvoices(false)
+
+      return {
+        invoices: sortInvoicesByDate,
+        userTotalBalance: response.data?.userInformations.informations,
+      }
+    },
+
+    enabled: userInformations.authorized,
+  })
+
   return (
     <GlobalContext.Provider
       value={{
@@ -99,6 +158,11 @@ const GlobalStorage = ({ children }: Props) => {
         invoiceBeingVisualized,
         openInvoiceForm,
         dueDate,
+        invoices,
+        isLoading,
+        loadingInvoices,
+        colorTheme,
+        setColorTheme,
         setDueDate,
         setOpenInvoiceForm,
         setInvoiceBeingVisualized,

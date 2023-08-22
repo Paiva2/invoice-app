@@ -41,16 +41,16 @@ export default function RootLayout({ children }: RootLayout) {
         suppressHydrationWarning
         className={`${leagueSpartan.className} flex`}
       >
-        <GlobalStorage>
-          <SessionProvider>
-            <QueryClientProvider client={queryClient}>
+        <SessionProvider>
+          <QueryClientProvider client={queryClient}>
+            <GlobalStorage>
               <div className="flex w-full lg:flex-col relative h-screen">
                 <SidebarMenu />
                 <NextAuthProvider>{children}</NextAuthProvider>
               </div>
-            </QueryClientProvider>
-          </SessionProvider>
-        </GlobalStorage>
+            </GlobalStorage>
+          </QueryClientProvider>
+        </SessionProvider>
       </body>
     </html>
   )

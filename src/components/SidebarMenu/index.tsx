@@ -15,15 +15,15 @@ import React, {
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { UserProfileSchema } from "../../../types"
 import { Image as ImageIcon, SignOut } from "@phosphor-icons/react"
-import { priceFormatter } from "@/utils/priceFormatter"
 import NumberFormatInput from "../NumberFormatInput"
 import LoadingCircle from "../LoadingCircle"
 import Cookies from "js-cookie"
-import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
+import MoonIcon from "@/icons/MoonIcon"
 
 const SidebarMenu = () => {
-  const { userInformations, setUserInformations } = useContext(GlobalContext)
+  const { userInformations, colorTheme, setColorTheme, setUserInformations } =
+    useContext(GlobalContext)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [totalBalance, setTotalBalance] = useState("")
@@ -32,8 +32,6 @@ const SidebarMenu = () => {
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
 
   const [imagePreview, setImagePreview] = useState<File | null>(null)
-
-  const router = useRouter()
 
   const { data: userData, isLoading: loadingProfile } = useQuery({
     queryKey: ["getUserInformations"],
@@ -121,6 +119,18 @@ const SidebarMenu = () => {
 
   const isAllFieldsFilled = Boolean(totalBalance && username)
 
+  function handleChangeTheme() {
+    if (colorTheme === "dark") {
+      localStorage.setItem("invoice-app-theme", "light")
+
+      setColorTheme("light")
+    } else {
+      localStorage.setItem("invoice-app-theme", "dark")
+
+      setColorTheme("dark")
+    }
+  }
+
   return (
     <Fragment>
       <div className="z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between lg:flex-row lg:h-auto lg:rounded-none">
@@ -136,8 +146,11 @@ const SidebarMenu = () => {
             !userInformations.authorized && "pb-10"
           } flex-col gap-[1.875rem] items-center justify-center lg:flex-row lg:w-[20%] sm:w-[35%!important] lg:pb-0`}
         >
-          <button className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff]">
-            <LightIcon />
+          <button
+            onClick={handleChangeTheme}
+            className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff]"
+          >
+            {colorTheme === "dark" ? <LightIcon /> : <MoonIcon />}
           </button>
           {userInformations.authorized && (
             <div className="w-full gap-5 flex-col border-t border-[#494e6e] py-[1.5625rem] flex items-center justify-center lg:border-t-0 lg:border-l lg:p-0 lg:h-full lg:gap-3">
@@ -183,11 +196,11 @@ const SidebarMenu = () => {
                   Profile
                 </h2>
                 <form
-                  className="flex flex-col gap-5 justify-between"
+                  className="flex flex-col gap-5 justify-between h-full pb-10"
                   onSubmit={handleChangeProfile}
                 >
-                  <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative">
-                    <div className="absolute flex items-center justify-center bg-[rgba(0,0,0,0.3)] transition-all delay-75 ease-in-out right-0 left-0 w-full h-[12.5rem] hover:bg-[rgba(0,0,0,0.6)]">
+                  <label className="w-[12.5rem] h-[12.5rem] rounded-full self-center overflow-hidden cursor-pointer relative sm:w-[8rem] sm:h-[8rem]">
+                    <div className="translateCenter absolute flex items-center justify-center sm:left-[50%] sm:top-[50%] bg-[rgba(0,0,0,0.3)] transition-all delay-75 ease-in-out right-0 left-0 w-full h-[12.5rem] hover:bg-[rgba(0,0,0,0.6)] ">
                       <ImageIcon size={60} color="#c4c4c4" weight="regular" />
                     </div>
                     <img

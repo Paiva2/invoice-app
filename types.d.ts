@@ -47,3 +47,10 @@ export interface RegisterSchemaInterface {
   password: string | null
   provider?: string
 }
+
+interface UserInvoice {
+  userInformations: {
+    userInvoices: Array<InvoiceSchema>
+    informations: string
+  }
+}

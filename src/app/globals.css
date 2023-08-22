@@ -11,10 +11,20 @@ body {
   @apply border border-transparent hover:border-light-purple transition duration-150 ease-in-out focus:outline-0;
 }
 
+.shadowForLight {
+  box-shadow: 0 10px 10px -10px rgba(72, 84, 159, 0.1004);
+}
+
 .loader {
   margin: 0 auto;
   border: 5px solid #7c5dfa;
   border-top: 5px solid #1e2139;
+}
+
+@media (max-width: 768px) {
+  .translateCenter {
+    transform: translate(-50%, -50%);
+  }
 }
 
 .Toastify__toast-theme--dark {
