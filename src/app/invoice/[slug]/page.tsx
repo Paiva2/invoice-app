@@ -29,6 +29,19 @@ const invoiceDetailsTheme = tv({
   },
 })
 
+const editInvoiceColorTheme = tv({
+  base: "w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]",
+  variants: {
+    theme: {
+      dark: "bg-dark-purple",
+      light: "bg-light-bg",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
+
 interface SingleInvoice {
   params: {
     slug: string
@@ -175,10 +188,16 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]"
+            className={editInvoiceColorTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             <div className="w-full p-6 gap-7 flex flex-col">
-              <h2 className="text-3xl font-semibold">
+              <h2
+                className={`text-3xl font-semibold text-${
+                  isLightTheme ? "dark-blue" : "pure-white"
+                }`}
+              >
                 Edit <span className="text-hash-blue">#</span>
                 {invoice.id}
               </h2>

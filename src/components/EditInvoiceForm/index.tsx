@@ -109,7 +109,7 @@ const EditInvoiceForm = () => {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(handleEditInvoice)}
-        className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5 [&>div>label]:flex [&>div>label]:flex-col [&>div>label]:gap-2 [&>div>label>input]:bg-dark-blue [&>div>label>input]:p-3 [&>div>label>input]:rounded"
+        className="flex flex-col gap-7 [&>div]:flex [&>div:not(:last-child)]:flex-col [&>div]:gap-5"
       >
         <InvoiceForm />
       </form>

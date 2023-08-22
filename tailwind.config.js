@@ -31,6 +31,7 @@ module.exports = {
         "transparent-orange": "rgba(255,143,0,.0571)",
         "transparent-emerald": "rgba(51,214,159,.0571)",
         "transparent-white": "rgba(223,227,250,.0571)",
+        "light-bg": "#f8f8fb",
       },
       keyframes: {
         openMenuAnimation: {

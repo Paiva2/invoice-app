@@ -5,6 +5,21 @@ import { priceFormatter } from "@/utils/priceFormatter"
 import React, { useContext } from "react"
 import { v4 as uuidv4 } from "uuid"
 import NumberFormatInput from "../NumberFormatInput"
+import { tv } from "tailwind-variants"
+
+const itemListTheme = tv({
+  base: "flex items-center gap-2.5 justify-between [&>label>input]:p-2.5 [&>label>input]:rounded [&>input]:border [&>input]:border-transparent [&>input]:hover:border-light-purple [&>input]:transition [&>input]:duration-150 [&>input]:ease-in-out [&>input:focus]:outline-0",
+  variants: {
+    theme: {
+      dark: "[&>label>input]:bg-dark-blue text-pure-white",
+      light:
+        "[&>label>input]:bg-pure-white text-dark-blue [&>label>input]:border [&>label>input]:border-gray-300",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
 
 const InvoiceItemList = () => {
   const itemListSchema = {
@@ -14,8 +29,10 @@ const InvoiceItemList = () => {
     price: 0,
   }
 
-  const { itemFromListValues, setItemFromListValues } =
+  const { itemFromListValues, setItemFromListValues, colorTheme } =
     useContext(GlobalContext)
+
+  const isLightTheme = colorTheme === "light"
 
   function handleAddNewItemToItemList() {
     setItemFromListValues((oldValue) => [
@@ -72,7 +89,9 @@ const InvoiceItemList = () => {
           return (
             <div
               key={item.id}
-              className="flex items-center gap-2.5 justify-between [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded [&>input]:border [&>input]:border-transparent [&>input]:hover:border-light-purple [&>input]:transition [&>input]:duration-150 [&>input]:ease-in-out [&>input:focus]:outline-0"
+              className={itemListTheme({
+                theme: isLightTheme ? "light" : "dark",
+              })}
             >
               <label className="w-[35%] [&>input]:border min-h-[5.625rem] [&>input]:border-transparent [&>input]:hover:border-light-purple [&>input]:transition [&>input]:duration-150 [&>input]:ease-in-out [&>input:focus]:outline-0">
                 Item Name

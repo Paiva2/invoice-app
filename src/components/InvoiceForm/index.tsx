@@ -6,11 +6,26 @@ import InvoiceItemList from "../InvoiceItemList"
 import DatePicker from "react-datepicker"
 import { GlobalContext } from "@/context/GlobalContext"
 import { usePathname } from "next/navigation"
+import { tv } from "tailwind-variants"
+
+const datePickerTheme = tv({
+  base: "rounded p-3 w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0",
+  variants: {
+    theme: {
+      dark: "bg-dark-blue text-pure-white",
+      light: "bg-pure-white text-dark-blue",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
 
 const InvoiceForm = () => {
   const {
     openInvoiceForm,
     dueDate,
+    colorTheme,
     itemListSchema,
     setOpenInvoiceForm,
     setDueDate,
@@ -25,6 +40,8 @@ const InvoiceForm = () => {
     setItemFromListValues([itemListSchema])
   }, [openInvoiceForm])
 
+  const isLightTheme = colorTheme === "light"
+
   return (
     <Fragment>
       <div>
@@ -36,7 +53,7 @@ const InvoiceForm = () => {
           inputType="text"
         />
 
-        <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded">
+        <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] ">
           <CustomInput registerName="cityFrom" label="City" inputType="text" />
           <CustomInput
             registerName="postalCodeFrom"
@@ -73,7 +90,7 @@ const InvoiceForm = () => {
           inputType="text"
         />
 
-        <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] [&>label>input]:bg-dark-blue [&>label>input]:p-2.5 [&>label>input]:rounded">
+        <div className="flex gap-2 items-center [&>label]:flex [&>label]:flex-col [&>label]:w-[calc(100%/3)] ">
           <CustomInput registerName="cityTo" label="City" inputType="text" />
 
           <CustomInput
@@ -96,7 +113,9 @@ const InvoiceForm = () => {
             onChange={(date: Date) => setDueDate(date)}
             minDate={new Date()}
             showIcon
-            className="bg-dark-blue text-pure-white rounded p-3 w-full border border-transparent hover:border-light-purple transition duration-150 ease-in-out outline-0"
+            className={datePickerTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           />
         </div>
 
