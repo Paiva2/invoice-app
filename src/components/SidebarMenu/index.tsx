@@ -185,7 +185,7 @@ const SidebarMenu = () => {
         >
           <button
             onClick={handleChangeTheme}
-            className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff]"
+            className="[&>svg]:transition duration-150 ease-in-out fill-[#858BB2] hover:[&>svg]:fill-[#fff] hover:[&>svg>path]:fill-[#fff]"
           >
             {colorTheme === "dark" ? <LightIcon /> : <MoonIcon />}
           </button>

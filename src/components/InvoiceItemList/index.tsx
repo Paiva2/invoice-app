@@ -126,22 +126,22 @@ const InvoiceItemList = () => {
                   }}
                 />
               </label>
-              <label className="flex-1 min-h-[5.625rem]">
+              <label className="flex-1 min-h-[5.625rem] overflow-y-auto">
                 <p>Total</p>
 
                 <div className="flex justify-between items-center p-2.5">
                   <span className="flex items-center h-full w-full font-bold">
                     {getTotalPrice(idx)}
                   </span>
-                  <button
-                    onClick={() => handleRemoveNewItemFromList(item)}
-                    className="[&>svg]:transition [&>svg]:duration-200 [&>svg]:ease-in-out [&>svg]:fill-hash-blue hover:[&>svg]:fill-light-red"
-                    type="button"
-                  >
-                    <TrashIcon />
-                  </button>
                 </div>
               </label>
+              <button
+                onClick={() => handleRemoveNewItemFromList(item)}
+                className="[&>svg]:transition [&>svg]:duration-200 [&>svg]:ease-in-out [&>svg]:fill-hash-blue hover:[&>svg]:fill-light-red"
+                type="button"
+              >
+                <TrashIcon />
+              </button>
             </div>
           )
         })}
