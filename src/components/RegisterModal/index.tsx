@@ -23,6 +23,7 @@ import {
   registerModalTheme,
 } from "@/lib/twVariants"
 import { GlobalContext } from "@/context/GlobalContext"
+import GithubIcon from "@/icons/GithubIcon"
 
 const registerSchema = z
   .object({
@@ -132,11 +133,7 @@ const RegisterModal = () => {
               theme: isLightTheme ? "light" : "dark",
             })}
           >
-            <img
-              src="https://www.svgrepo.com/show/361182/github-inverted.svg"
-              className="w-7 h-7"
-              alt=""
-            />{" "}
+            <GithubIcon />
             <span className="font-semibold mt-1">Sign up with Github</span>
           </button>
         </div>

@@ -14,12 +14,12 @@ import ToastifyContainer from "../ToastifyContainer"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { LoginSchemaInterface } from "../../../types"
 import { GlobalContext } from "@/context/GlobalContext"
-import { tv } from "tailwind-variants"
 import {
   inputTheme,
   loginGithubTheme,
   outSignInTitleTheme,
 } from "@/lib/twVariants"
+import GithubIcon from "@/icons/GithubIcon"
 
 const loginFormSchema = z.object({
   email: z
@@ -117,11 +117,7 @@ const LoginModal = () => {
               theme: isLightTheme ? "light" : "dark",
             })}
           >
-            <img
-              src="https://www.svgrepo.com/show/361182/github-inverted.svg"
-              className="w-7 h-7"
-              alt=""
-            />{" "}
+            <GithubIcon />
             <span className="font-semibold mt-1 text-pure-white">
               Login with Github
             </span>

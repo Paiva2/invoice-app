@@ -20,6 +20,34 @@ import LoadingCircle from "../LoadingCircle"
 import Cookies from "js-cookie"
 import { signOut } from "next-auth/react"
 import MoonIcon from "@/icons/MoonIcon"
+import { tv } from "tailwind-variants"
+
+export const profileThemeColor = tv({
+  base: "w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]",
+  variants: {
+    theme: {
+      dark: "bg-dark-purple",
+      light: "bg-light-bg",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
+
+export const inputsProfileThemeColor = tv({
+  base: "flex text-lg flex-col text-pure-white [&>input]:p-2.5 [&>input]:rounded",
+  variants: {
+    theme: {
+      dark: "text-pure-white [&>input]:bg-dark-blue",
+      light:
+        "text-dark-blue [&>input]:bg-pure-white [&>input]:border [&>input]:border-gray-300",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
 
 const SidebarMenu = () => {
   const { userInformations, colorTheme, setColorTheme, setUserInformations } =
@@ -131,6 +159,8 @@ const SidebarMenu = () => {
     }
   }
 
+  const isLightTheme = colorTheme === "light"
+
   return (
     <Fragment>
       <div className="z-50 flex flex-col rounded-r-[20px] border-s-red-700 bg-strong-blue justify-between lg:flex-row lg:h-auto lg:rounded-none">
@@ -184,13 +214,19 @@ const SidebarMenu = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-purple w-[40%] relative transition-all delay-100 ease-in-out h-full overflow-y-auto animate-open-edit lg:w-[100%]"
+            className={profileThemeColor({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             {loadingProfile && <LoadingCircle />}
 
             {!loadingProfile && (
               <div className="w-full p-6 gap-7 flex flex-col h-full justify-between">
-                <h2 className="text-3xl font-semibold text-pure-white">
+                <h2
+                  className={`text-3xl font-semibold text-${
+                    isLightTheme ? "dark-blue" : "pure-white"
+                  }`}
+                >
                   Edit{" "}
                   <span className="text-hash-blue">{userData?.user.name}</span>{" "}
                   Profile
@@ -224,7 +260,11 @@ const SidebarMenu = () => {
                     />
                   </label>
 
-                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  <label
+                    className={inputsProfileThemeColor({
+                      theme: isLightTheme ? "light" : "dark",
+                    })}
+                  >
                     E-mail
                     <input
                       disabled
@@ -234,7 +274,11 @@ const SidebarMenu = () => {
                     />
                   </label>
 
-                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  <label
+                    className={inputsProfileThemeColor({
+                      theme: isLightTheme ? "light" : "dark",
+                    })}
+                  >
                     Username
                     <input
                       onChange={(e) => setUsername(e.target.value)}
@@ -244,7 +288,11 @@ const SidebarMenu = () => {
                     />
                   </label>
 
-                  <label className="flex text-lg flex-col text-pure-white [&>input]:bg-dark-blue [&>input]:p-2.5 [&>input]:rounded">
+                  <label
+                    className={inputsProfileThemeColor({
+                      theme: isLightTheme ? "light" : "dark",
+                    })}
+                  >
                     Manage your total balance
                     <NumberFormatInput
                       onValueChange={(e) => {
@@ -288,7 +336,7 @@ const SidebarMenu = () => {
                     <button
                       disabled={editUserProfile.isLoading}
                       onClick={() => setOpenProfile(!openProfile)}
-                      className="bg-dark-blue w-full text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
+                      className="bg-dark-blue w-full text-pure-white text-lg rounded-3xl transition px-6 duration-150 ease-in-out py-1.5 font-semibold leading-9 hover:bg-pure-white hover:text-dark-blue"
                       type="button"
                     >
                       Discard changes

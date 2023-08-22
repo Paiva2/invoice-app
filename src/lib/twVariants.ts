@@ -53,11 +53,11 @@ export const inputTheme = tv({
 })
 
 export const loginGithubTheme = tv({
-  base: "w-full py-3 my-3 border flex space-x-2 text-pure-white items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out hover:bg-hover-purple",
+  base: "w-full py-3 my-3 flex space-x-2 text-pure-white items-center justify-center rounded-lg transition delay-70 ease-in-out hover:bg-hover-purple",
   variants: {
     theme: {
       light: "bg-light-purple",
-      dark: "bg-transparent",
+      dark: "bg-light-purple",
     },
   },
   defaultVariants: {
