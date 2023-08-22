@@ -7,16 +7,45 @@ import { InvoiceSchema } from "../../../types"
 import { useMutation, useQueryClient } from "react-query"
 import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
+import { tv } from "tailwind-variants"
+
+const invoiceTopbarTheme = tv({
+  base: "shadowForLight p-8 rounded-lg flex justify-between items-center",
+  variants: {
+    theme: {
+      dark: "bg-strong-blue",
+      light: "bg-pure-white",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
+
+const confirmDeleteModalTheme = tv({
+  base: "shadowForLight w-[40%] relative h-[35%] rounded-lg transition-all delay-100 ease-in-out overflow-y-auto animate-open-edit lg:w-[50%] md:w-[80%!important] sm:h-[auto]",
+  variants: {
+    theme: {
+      dark: "bg-strong-blue text-pure-white",
+      light: "bg-pure-white text-dark-blue",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
 
 interface InvoiceInformationProps {
   invoice: InvoiceSchema
 }
 
 const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
-  const { openInvoiceForm, setOpenInvoiceForm, userInformations } =
+  const { openInvoiceForm, setOpenInvoiceForm, userInformations, colorTheme } =
     useContext(GlobalContext)
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
+
+  const isLightTheme = colorTheme === "light"
 
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -69,9 +98,19 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
 
   return (
     <div className="flex flex-col gap-2.5">
-      <div className="bg-dark-blue p-8 rounded-lg flex justify-between items-center">
+      <div
+        className={invoiceTopbarTheme({
+          theme: isLightTheme ? "light" : "dark",
+        })}
+      >
         <div className="flex items-baseline gap-8 sm:w-full sm:justify-between">
-          <p className="text-sm">Status</p>
+          <p
+            className={`text-sm text-${
+              isLightTheme ? "dark-blue" : "pure-white"
+            }`}
+          >
+            Status
+          </p>
 
           <InvoiceTypePin type={invoice.status ?? "draft"} />
         </div>
@@ -79,7 +118,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
         <div className="flex items-center gap-2.5 sm:absolute sm:bottom-[.3125rem] sm:w-full sm:justify-center sm:right-0">
           <button
             onClick={() => setOpenInvoiceForm(!openInvoiceForm)}
-            className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
+            className="bg-dark-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
             type="button"
           >
             Edit
@@ -110,9 +149,11 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-dark-blue w-[40%] relative h-[35%] rounded-lg transition-all delay-100 ease-in-out overflow-y-auto animate-open-edit lg:w-[50%] md:w-[80%!important] sm:h-[auto]"
+            className={confirmDeleteModalTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
-            <div className="w-full p-6 gap-7 flex flex-col px-10 py-10">
+            <div className="w-full p-6 gap-7 flex flex-col px-10  py-10">
               <h2 className="text-4xl font-semibold text-center sm:text-2xl">
                 Confirm Delete
               </h2>
@@ -122,10 +163,10 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
                 action cannot be undone.
               </p>
 
-              <div className="flex self-end gap-5 sm:self-center">
+              <div className="flex self-end gap-5 sm:self-center text-pure-white">
                 <button
                   onClick={() => setOpenDeleteModal(!openDeleteModal)}
-                  className="bg-strong-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
+                  className="bg-dark-blue px-6 py-[.7rem] pt-[1rem] rounded-full transition duration-300 ease-in-out font-semibold hover:bg-pure-white hover:text-strong-blue"
                   type="button"
                 >
                   Cancel
@@ -133,7 +174,7 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
 
                 <button
                   onClick={handleDeleteInvoice}
-                  className="bg-light-red px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
+                  className="bg-light-red leading-[1.8125rem] px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-fade-red"
                   type="button"
                 >
                   Delete

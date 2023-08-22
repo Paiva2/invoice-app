@@ -11,8 +11,10 @@ import Placeholder from "@/icons/Placeholder"
 import { Helmet } from "react-helmet"
 
 const HomeMiddleSection = () => {
-  const { selectedFilters, invoices, loadingInvoices, isLoading } =
+  const { selectedFilters, invoices, loadingInvoices, isLoading, colorTheme } =
     useContext(GlobalContext)
+
+  const isLightTheme = colorTheme === "light"
 
   if (!invoices || isLoading) return
 
@@ -69,7 +71,11 @@ const HomeMiddleSection = () => {
             </p>
           </div>
         )}
-        <div className="text-center flex gap-5 self-end">
+        <div
+          className={`text-center  text-${
+            isLightTheme ? "dark-blue" : "pure-white"
+          } flex gap-5 self-end`}
+        >
           <div>
             <h1 className="text-xl font-bold">Total balance</h1>
             <p

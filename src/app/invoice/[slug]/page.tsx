@@ -14,6 +14,20 @@ import dayjs from "dayjs"
 import { GlobalContext } from "@/context/GlobalContext"
 import LoadingCircle from "@/components/LoadingCircle"
 import { Helmet } from "react-helmet"
+import { tv } from "tailwind-variants"
+
+const invoiceDetailsTheme = tv({
+  base: "shadowForLight p-8 rounded-lg flex flex-col gap-8 md:overflow-x-auto",
+  variants: {
+    theme: {
+      dark: "bg-strong-blue text-pure-white",
+      light: "bg-pure-white text-dark-blue",
+    },
+  },
+  defaultVariants: {
+    theme: "dark",
+  },
+})
 
 interface SingleInvoice {
   params: {
@@ -22,10 +36,16 @@ interface SingleInvoice {
 }
 
 const InvoiceInformations = ({ params }: SingleInvoice) => {
-  const { setInvoiceBeingVisualized, setOpenInvoiceForm, openInvoiceForm } =
-    useContext(GlobalContext)
+  const {
+    setInvoiceBeingVisualized,
+    setOpenInvoiceForm,
+    openInvoiceForm,
+    colorTheme,
+  } = useContext(GlobalContext)
 
   const [singleInvoiceLoading, setSingleInvoiceLoading] = useState(true)
+
+  const isLightTheme = colorTheme === "light"
 
   const {
     data: invoice = {} as InvoiceSchema,
@@ -74,7 +94,9 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
       <div className="flex flex-col w-[65%] justify-center gap-5 lg:w-[90%]">
         <Link
           href="/"
-          className="flex items-baseline gap-3 cursor-pointer font-semibold text-base hover:text-[#888eb0]"
+          className={`flex items-baseline gap-3 cursor-pointer font-semibold text-base hover:text-[#888eb0] text-${
+            isLightTheme ? "dark-blue" : "pure-white"
+          }`}
         >
           <ArrowLeft />
           <p>Go back</p>
@@ -82,7 +104,11 @@ const InvoiceInformations = ({ params }: SingleInvoice) => {
 
         <InvoiceInformationTopBar invoice={invoice} />
 
-        <div className="bg-dark-blue p-8 rounded-lg flex flex-col gap-8 md:overflow-x-auto">
+        <div
+          className={invoiceDetailsTheme({
+            theme: isLightTheme ? "light" : "dark",
+          })}
+        >
           <div className="flex justify-between">
             <div className="text-sm">
               <p className="font-bold">
