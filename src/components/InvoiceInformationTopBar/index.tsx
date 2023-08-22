@@ -40,8 +40,13 @@ interface InvoiceInformationProps {
 }
 
 const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
-  const { openInvoiceForm, setOpenInvoiceForm, userInformations, colorTheme } =
-    useContext(GlobalContext)
+  const {
+    openInvoiceForm,
+    setOpenInvoiceForm,
+    userInformations,
+    colorTheme,
+    userTotalBalance,
+  } = useContext(GlobalContext)
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
@@ -96,6 +101,10 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
     deleteInvoice.mutateAsync(invoice.id)
   }
 
+  const totalInvoiceValue = invoice.itemList.reduce((acc, invoice) => {
+    return (acc += Number(invoice.price))
+  }, 0)
+
   return (
     <div className="flex flex-col gap-2.5">
       <div
@@ -132,13 +141,16 @@ const InvoiceInformationTopBar = ({ invoice }: InvoiceInformationProps) => {
           </button>
 
           {invoice.status !== "paid" && (
-            <button
-              onClick={handleMarkAsPaid}
-              className="bg-light-purple px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-hover-purple"
-              type="button"
-            >
-              Mark as Paid
-            </button>
+            <div className="flex flex-col">
+              <button
+                disabled={totalInvoiceValue > userTotalBalance}
+                onClick={handleMarkAsPaid}
+                className="bg-light-purple px-6 py-[.7rem] rounded-full transition duration-300 ease-in-out font-semibold flex text-center hover:bg-hover-purple disabled:bg-slate-500"
+                type="button"
+              >
+                Mark as Paid
+              </button>
+            </div>
           )}
         </div>
       </div>

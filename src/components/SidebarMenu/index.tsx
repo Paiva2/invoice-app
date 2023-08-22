@@ -50,8 +50,13 @@ export const inputsProfileThemeColor = tv({
 })
 
 const SidebarMenu = () => {
-  const { userInformations, colorTheme, setColorTheme, setUserInformations } =
-    useContext(GlobalContext)
+  const {
+    userInformations,
+    colorTheme,
+    setUserTotalBalance,
+    setColorTheme,
+    setUserInformations,
+  } = useContext(GlobalContext)
 
   const [openProfile, setOpenProfile] = useState(false)
   const [totalBalance, setTotalBalance] = useState("")
@@ -68,6 +73,8 @@ const SidebarMenu = () => {
       const response = await api.post("/user-informations", {
         id: userInformations.id,
       })
+
+      setUserTotalBalance(response.data.user.totalBalance)
 
       return response.data
     },
