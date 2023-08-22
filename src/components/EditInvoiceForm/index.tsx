@@ -39,6 +39,7 @@ const EditInvoiceForm = () => {
     dueDate,
     invoiceBeingVisualized,
     itemFromListValues,
+    setDueDateError,
     setOpenInvoiceForm,
     setItemFromListValues,
     setDueDate,
@@ -102,7 +103,13 @@ const EditInvoiceForm = () => {
       itemList: itemFromListValues,
     }
 
-    editInvoice.mutateAsync(editedInvoice)
+    if (!dueDate) {
+      setDueDateError(true)
+    } else {
+      setDueDateError(false)
+    }
+
+    await editInvoice.mutateAsync(editedInvoice)
   }
 
   return (

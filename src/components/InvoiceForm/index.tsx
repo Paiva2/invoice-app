@@ -27,6 +27,7 @@ const InvoiceForm = () => {
     dueDate,
     colorTheme,
     itemListSchema,
+    dueDateError,
     setOpenInvoiceForm,
     setDueDate,
     setItemFromListValues,
@@ -106,7 +107,7 @@ const InvoiceForm = () => {
           />
         </div>
 
-        <div className="w-full flex-col flex">
+        <div className="w-full flex-col flex min-h-[6.875rem]">
           <span className={`text-${isLightTheme ? "dark-blue" : "pure-white"}`}>
             Invoice Date
           </span>
@@ -119,6 +120,9 @@ const InvoiceForm = () => {
               theme: isLightTheme ? "light" : "dark",
             })}
           />
+          {dueDateError && (
+            <p className="text-xs text-light-red mt-1">Can't be empty.</p>
+          )}
         </div>
 
         <CustomInput

@@ -53,6 +53,9 @@ interface GlobalContextInterface {
   userTotalBalance: number
   setUserTotalBalance: Dispatch<SetStateAction<number>>
 
+  dueDateError: boolean
+  setDueDateError: Dispatch<SetStateAction<boolean>>
+
   loadingInvoices: boolean
 
   isLoading: boolean
@@ -91,6 +94,7 @@ const GlobalStorage = ({ children }: Props) => {
   )
   const [loadingInvoices, setLoadingInvoices] = useState(true)
   const [userTotalBalance, setUserTotalBalance] = useState(0)
+  const [dueDateError, setDueDateError] = useState(false)
 
   const currentPage = usePathname()
   const authToken = Cookies.get("invoice-app-auth")
@@ -167,6 +171,8 @@ const GlobalStorage = ({ children }: Props) => {
         loadingInvoices,
         colorTheme,
         userTotalBalance,
+        dueDateError,
+        setDueDateError,
         setUserTotalBalance,
         setColorTheme,
         setDueDate,

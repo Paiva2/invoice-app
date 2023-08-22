@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form"
 import { tv } from "tailwind-variants"
 
 const invoiceLabelTheme = tv({
-  base: "min-h-[5.625rem] gap-2 flex flex-col",
+  base: "min-h-[6.875rem] gap-2 flex flex-col",
   variants: {
     theme: {
       dark: "text-pure-white",

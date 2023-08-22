@@ -58,6 +58,7 @@ const NewInvoiceForm = () => {
     itemListSchema,
     dueDate,
     openInvoiceForm,
+    setDueDateError,
     setItemFromListValues,
     setOpenInvoiceForm,
   } = useContext(GlobalContext)
@@ -107,6 +108,12 @@ const NewInvoiceForm = () => {
       itemList: itemFromListValues,
     }
 
+    if (!dueDate) {
+      setDueDateError(true)
+    } else {
+      setDueDateError(false)
+    }
+
     await createNewInvoice.mutateAsync(newInvoice)
   }
 
@@ -127,6 +134,12 @@ const NewInvoiceForm = () => {
       invoiceDateTo: dueDate,
       itemList: itemFromListValues,
       status: "draft",
+    }
+
+    if (!dueDate) {
+      setDueDateError(true)
+    } else {
+      setDueDateError(false)
     }
 
     await createNewInvoice.mutateAsync(newInvoice)
