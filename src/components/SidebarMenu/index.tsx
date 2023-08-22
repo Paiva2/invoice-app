@@ -109,13 +109,14 @@ const SidebarMenu = () => {
 
     Cookies.remove("invoice-app-auth")
 
-    router.push("/login")
-
     setOpenProfile(false)
 
     setUserInformations({ id: "", authorized: false })
 
-    signOut()
+    signOut({
+      redirect: true,
+      callbackUrl: "/",
+    })
   }
 
   const isAllFieldsFilled = Boolean(totalBalance && username)

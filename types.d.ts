@@ -40,3 +40,10 @@ export interface LoginSchemaInterface {
   password: string | null
   provider?: string
 }
+
+export interface RegisterSchemaInterface {
+  email: string
+  username: string
+  password: string | null
+  provider?: string
+}

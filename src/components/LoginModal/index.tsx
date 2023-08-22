@@ -58,7 +58,7 @@ const LoginModal = () => {
     }
   }
 
-  async function handleLogin(data: NewLoginType) {
+  function handleLogin(data: NewLoginType) {
     const loginSchema = {
       email: data.email,
       password: data.password,
@@ -67,7 +67,7 @@ const LoginModal = () => {
     fetchLogin(loginSchema)
   }
 
-  async function handleLoginWithProvider() {
+  function handleLoginWithProvider() {
     const loginSchemaWithProvider = {
       email: session.data?.user?.email as string,
       password: null,
@@ -152,7 +152,7 @@ const LoginModal = () => {
             </button>
             <p className="text-center text-pure-white">
               Not registered yet?{" "}
-              <Link
+              <a
                 href="/register"
                 className="text-light-purple font-medium inline-flex space-x-1 items-center hover:text-hover-purple"
               >
@@ -160,7 +160,7 @@ const LoginModal = () => {
                 <span>
                   <RedirectIcon />
                 </span>
-              </Link>
+              </a>
             </p>
           </div>
         </form>

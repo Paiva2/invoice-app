@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useLayoutEffect } from "react"
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import Link from "next/link"
 import { api } from "@/lib/api"
@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { AxiosError } from "axios"
 import ToastifyContainer from "../ToastifyContainer"
+import { signIn, signOut, useSession } from "next-auth/react"
+import { RegisterSchemaInterface } from "../../../types"
 
 const registerSchema = z
   .object({
@@ -32,6 +34,8 @@ const registerSchema = z
 export type NewRegisterType = z.infer<typeof registerSchema>
 
 const RegisterModal = () => {
+  const session = useSession()
+
   const {
     register,
     handleSubmit,
@@ -41,14 +45,8 @@ const RegisterModal = () => {
     resolver: zodResolver(registerSchema),
   })
 
-  async function handleRegisterNewUser(data: NewRegisterType) {
+  async function handleFetchRegister(registerBody: RegisterSchemaInterface) {
     try {
-      const registerBody = {
-        email: data.email,
-        username: data.username,
-        password: data.password,
-      }
-
       await api.post("/register", registerBody)
 
       triggerToastSucess("Register successfull!")
@@ -64,8 +62,40 @@ const RegisterModal = () => {
       }
 
       console.error("There was an error logging in...")
+    } finally {
+      signOut({
+        redirect: false,
+      })
     }
   }
+
+  async function handleRegisterNewUser(data: NewRegisterType) {
+    const registerBody = {
+      email: data.email,
+      username: data.username,
+      password: data.password,
+    }
+
+    handleFetchRegister(registerBody)
+  }
+
+  async function handleRegisterWithProvider() {
+    const registerBody = {
+      email: session.data?.user?.email as string,
+      username: session?.data?.user?.name as string,
+      image: session.data?.user?.image,
+      provider: "github",
+      password: null,
+    }
+
+    handleFetchRegister(registerBody)
+  }
+
+  useLayoutEffect(() => {
+    if (session.status === "authenticated") {
+      handleRegisterWithProvider()
+    }
+  }, [session])
 
   return (
     <div className="w-full h-screen flex items-center justify-center lg:pt-5 lg:pb-5 md:overflow-auto">
@@ -76,7 +106,10 @@ const RegisterModal = () => {
         <p className="text-hash-blue">Welcome!</p>
 
         <div className="my-5">
-          <button className="w-full py-3 my-3 border flex space-x-2 items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out text-pure-white  hover:bg-hover-purple">
+          <button
+            onClick={() => signIn("github")}
+            className="w-full py-3 my-3 border flex space-x-2 items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out text-pure-white  hover:bg-hover-purple"
+          >
             <img
               src="https://www.svgrepo.com/show/361182/github-inverted.svg"
               className="w-7 h-7"
@@ -162,7 +195,7 @@ const RegisterModal = () => {
             </button>
             <p className="text-center text-pure-white md:mt-[40px!important]">
               Already registered?{" "}
-              <Link
+              <a
                 href="/login"
                 className="text-light-purple font-medium inline-flex space-x-1 items-center hover:text-hover-purple"
               >
@@ -170,7 +203,7 @@ const RegisterModal = () => {
                 <span>
                   <RedirectIcon />
                 </span>
-              </Link>
+              </a>
             </p>
           </div>
         </form>
