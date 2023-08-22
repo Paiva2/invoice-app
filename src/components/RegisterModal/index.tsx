@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useLayoutEffect } from "react"
+import React, { useContext, useLayoutEffect } from "react"
 import { RedirectIcon } from "@/icons/RedirectIcon"
 import Link from "next/link"
 import { api } from "@/lib/api"
@@ -15,6 +15,14 @@ import { AxiosError } from "axios"
 import ToastifyContainer from "../ToastifyContainer"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { RegisterSchemaInterface } from "../../../types"
+import {
+  inputTheme,
+  loginGithubTheme,
+  outSignInLabelsTheme,
+  outSignInTitleTheme,
+  registerModalTheme,
+} from "@/lib/twVariants"
+import { GlobalContext } from "@/context/GlobalContext"
 
 const registerSchema = z
   .object({
@@ -34,6 +42,8 @@ const registerSchema = z
 export type NewRegisterType = z.infer<typeof registerSchema>
 
 const RegisterModal = () => {
+  const { colorTheme } = useContext(GlobalContext)
+
   const session = useSession()
 
   const {
@@ -97,10 +107,20 @@ const RegisterModal = () => {
     }
   }, [session])
 
+  const isLightTheme = colorTheme === "light"
+
   return (
     <div className="w-full h-screen flex items-center justify-center lg:pt-5 lg:pb-5 md:overflow-auto">
-      <div className="w-2/5 bg-strong-blue p-8 rounded-xl transition-all delay-100 ease-in-out lg:w-[90%] md:px-10 md:py-10 md:overflow-auto md:h-full">
-        <h1 className="text-4xl font-medium text-pure-white md:text-[1.5rem]">
+      <div
+        className={registerModalTheme({
+          theme: isLightTheme ? "light" : "dark",
+        })}
+      >
+        <h1
+          className={outSignInTitleTheme({
+            theme: isLightTheme ? "light" : "dark",
+          })}
+        >
           Register
         </h1>
         <p className="text-hash-blue">Welcome!</p>
@@ -108,7 +128,9 @@ const RegisterModal = () => {
         <div className="my-5">
           <button
             onClick={() => signIn("github")}
-            className="w-full py-3 my-3 border flex space-x-2 items-center justify-center border-light-purple rounded-lg transition delay-70 ease-in-out text-pure-white  hover:bg-hover-purple"
+            className={loginGithubTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             <img
               src="https://www.svgrepo.com/show/361182/github-inverted.svg"
@@ -121,11 +143,19 @@ const RegisterModal = () => {
         <form onSubmit={handleSubmit(handleRegisterNewUser)} className="mt-10">
           <div className="flex flex-col space-y-5">
             <label>
-              <p className="font-medium text-pure-white pb-2">Email address</p>
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
+                Email address
+              </p>
               <input
                 {...register("email", { required: true })}
                 type="email"
-                className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter email address"
               />
               {errors.email && (
@@ -135,11 +165,19 @@ const RegisterModal = () => {
               )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">Username</p>
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
+                Username
+              </p>
               <input
                 {...register("username", { required: true })}
                 type="text"
-                className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter your username"
               />
               {errors.username && (
@@ -149,11 +187,19 @@ const RegisterModal = () => {
               )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">Password</p>
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
+                Password
+              </p>
               <input
                 {...register("password", { required: true })}
                 type="password"
-                className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter your password"
               />
               {errors.password && (
@@ -163,13 +209,19 @@ const RegisterModal = () => {
               )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
                 Confirm password
               </p>
               <input
                 {...register("confirmPassword", { required: true })}
                 type="password"
-                className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Confirm your password"
               />
               {errors.confirmPassword && (
@@ -193,7 +245,11 @@ const RegisterModal = () => {
             >
               <span>Register</span>
             </button>
-            <p className="text-center text-pure-white md:mt-[40px!important]">
+            <p
+              className={`text-center text-${
+                isLightTheme ? "dark-blue" : "pure-white"
+              } md:mt-[40px!important]`}
+            >
               Already registered?{" "}
               <a
                 href="/login"

@@ -9,10 +9,16 @@ import triggerToastSucess, {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AxiosError } from "axios"
 import Link from "next/link"
-import React from "react"
+import React, { useContext } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import ToastifyContainer from "../ToastifyContainer"
+import { GlobalContext } from "@/context/GlobalContext"
+import {
+  inputTheme,
+  outSignInLabelsTheme,
+  outSignInTitleTheme,
+} from "@/lib/twVariants"
 
 const forgotPasswordSchema = z
   .object({
@@ -31,6 +37,8 @@ const forgotPasswordSchema = z
 export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>
 
 const ForgotPasswordModal = () => {
+  const { colorTheme } = useContext(GlobalContext)
+
   const {
     register,
     handleSubmit,
@@ -63,22 +71,40 @@ const ForgotPasswordModal = () => {
     }
   }
 
+  const isLightTheme = colorTheme === "light"
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-2/5 bg-strong-blue p-8 rounded-xl transition-all delay-100 ease-in-out lg:w-[90%] md:px-10 md:py-">
-        <h1 className="text-4xl font-medium text-pure-white md:text-[1.5rem]">
+      <div
+        className={`shadowForLight w-2/5 bg-${
+          isLightTheme ? "pure-white" : "strong-blue"
+        } p-8 rounded-xl lg:w-[90%]`}
+      >
+        <h1
+          className={outSignInTitleTheme({
+            theme: isLightTheme ? "light" : "dark",
+          })}
+        >
           Forgot your Password?
         </h1>
 
         <form onSubmit={handleSubmit(handleChangePassword)} className="my-10">
           <div className="flex flex-col space-y-5">
             <label>
-              <p className="font-medium text-pure-white pb-2">Email address</p>
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
+                Email address
+              </p>
               <input
                 id="email"
                 type="email"
                 {...register("email", { required: true })}
-                className="w-full py-3 text-pure-white border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter email address"
               />
               {errors.email && (
@@ -88,10 +114,18 @@ const ForgotPasswordModal = () => {
               )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">New Password</p>
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
+                New Password
+              </p>
               <input
                 type="password"
-                className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter your password"
                 {...register("password", { required: true })}
               />
@@ -102,12 +136,18 @@ const ForgotPasswordModal = () => {
               )}
             </label>
             <label>
-              <p className="font-medium text-pure-white pb-2">
+              <p
+                className={outSignInLabelsTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
+              >
                 Confirm new password
               </p>
               <input
                 type="password"
-                className="w-full text-pure-white py-3 border border-transparent hover:border-light-purple bg-dark-blue rounded-lg px-3 focus:outline-none focus:border-light-purple"
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Confirm your password"
                 {...register("confirmPassword", { required: true })}
               />
@@ -125,7 +165,11 @@ const ForgotPasswordModal = () => {
               <span>Send</span>
             </button>
 
-            <p className="text-center text-pure-white">
+            <p
+              className={`text-center text-${
+                isLightTheme ? "dark-blue" : "pure-white"
+              }`}
+            >
               Already registered?{" "}
               <Link
                 href="/login"
@@ -138,7 +182,11 @@ const ForgotPasswordModal = () => {
               </Link>
             </p>
 
-            <p className="text-center text-pure-white">
+            <p
+              className={`text-center text-${
+                isLightTheme ? "dark-blue" : "pure-white"
+              }`}
+            >
               Not registered yet?{" "}
               <Link
                 href="/register"

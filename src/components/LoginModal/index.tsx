@@ -14,6 +14,12 @@ import ToastifyContainer from "../ToastifyContainer"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { LoginSchemaInterface } from "../../../types"
 import { GlobalContext } from "@/context/GlobalContext"
+import { tv } from "tailwind-variants"
+import {
+  inputTheme,
+  loginGithubTheme,
+  outSignInTitleTheme,
+} from "@/lib/twVariants"
 
 const loginFormSchema = z.object({
   email: z
@@ -96,9 +102,9 @@ const LoginModal = () => {
         } p-8 rounded-xl lg:w-[90%]`}
       >
         <h1
-          className={`text-4xl font-medium text-${
-            isLightTheme ? "hash-blue" : "pure-white"
-          } md:text-[1.5rem]`}
+          className={outSignInTitleTheme({
+            theme: isLightTheme ? "light" : "dark",
+          })}
         >
           Login
         </h1>
@@ -107,9 +113,9 @@ const LoginModal = () => {
         <div className="my-5">
           <button
             onClick={() => signIn("github")}
-            className={`w-full py-3 my-3 border flex space-x-2 items-center justify-center bg-${
-              isLightTheme ? "light-purple" : "transparent"
-            } border-light-purple rounded-lg transition delay-70 ease-in-out hover:bg-hover-purple`}
+            className={loginGithubTheme({
+              theme: isLightTheme ? "light" : "dark",
+            })}
           >
             <img
               src="https://www.svgrepo.com/show/361182/github-inverted.svg"
@@ -126,7 +132,7 @@ const LoginModal = () => {
             <label>
               <p
                 className={`font-medium text-${
-                  isLightTheme ? "hash-blue" : "pure-white"
+                  isLightTheme ? "dark-blue" : "pure-white"
                 } pb-2`}
               >
                 Email address
@@ -135,11 +141,9 @@ const LoginModal = () => {
                 id="email"
                 type="email"
                 {...register("email", { required: true })}
-                className={`w-full py-3 text-pure-white border border-${
-                  isLightTheme ? "" : "transparent"
-                } hover:border-light-purple bg-${
-                  isLightTheme ? "pure-white" : "dark-blue"
-                } rounded-lg px-3 focus:outline-none focus:border-light-purple`}
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter email address"
               />
               {errors.email && (
@@ -151,7 +155,7 @@ const LoginModal = () => {
             <label>
               <p
                 className={`font-medium text-${
-                  isLightTheme ? "hash-blue" : "pure-white"
+                  isLightTheme ? "dark-blue" : "pure-white"
                 } pb-2`}
               >
                 Password
@@ -160,11 +164,9 @@ const LoginModal = () => {
                 id="password"
                 type="password"
                 {...register("password", { required: true })}
-                className={`w-full py-3 text-pure-white border border-${
-                  isLightTheme ? "" : "transparent"
-                } hover:border-light-purple bg-${
-                  isLightTheme ? "pure-white" : "dark-blue"
-                } rounded-lg px-3 focus:outline-none focus:border-light-purple`}
+                className={inputTheme({
+                  theme: isLightTheme ? "light" : "dark",
+                })}
                 placeholder="Enter your password"
               />
               {errors.password && (
@@ -189,7 +191,7 @@ const LoginModal = () => {
             </button>
             <p
               className={`text-center text-${
-                isLightTheme ? "hash-blue" : "pure-white"
+                isLightTheme ? "dark-blue" : "pure-white"
               }`}
             >
               Not registered yet?{" "}
