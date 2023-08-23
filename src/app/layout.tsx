@@ -2,7 +2,6 @@
 
 import SidebarMenu from "@/components/SidebarMenu"
 import "./globals.css"
-import type { Metadata } from "next"
 import { League_Spartan } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
 import { NextAuthProvider } from "./providers"
@@ -24,11 +23,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
-export const metadata: Metadata = {
-  title: "Invoice App",
-  description: "Invoice App Home",
-}
 
 interface RootLayout {
   children: React.ReactNode
