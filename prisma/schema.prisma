@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Account {
@@ -98,4 +99,6 @@ model InvoiceItemList {
   invoiceId String?
 
   Invoice Invoice? @relation(fields: [invoiceId], references: [id])
+
+  @@index([invoiceId])
 }
